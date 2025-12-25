@@ -1,0 +1,145 @@
+{
+  "lastUpdated": "2025-12-24T09:48:40.815Z",
+  "events": [
+    {
+      "year": 1857,
+      "eventName": "First War of Independence",
+      "description": "The Indian Rebellion of 1857, also known as the Sepoy Mutiny, was a major uprising against British East India Company rule.",
+      "personalities": [
+        {
+          "name": "Mangal Pandey",
+          "role": "Soldier who sparked the rebellion"
+        },
+        {
+          "name": "Rani Lakshmibai",
+          "role": "Queen of Jhansi"
+        },
+        {
+          "name": "Bahadur Shah Zafar",
+          "role": "Last Mughal Emperor"
+        }
+      ],
+      "impact": "Led to the end of East India Company rule and direct British Crown control",
+      "eventType": "Revolt"
+    },
+    {
+      "year": 1885,
+      "eventName": "Indian National Congress Founded",
+      "description": "The Indian National Congress was founded in Bombay by A.O. Hume, marking the beginning of organized political movement.",
+      "personalities": [
+        {
+          "name": "A.O. Hume",
+          "role": "Founder"
+        },
+        {
+          "name": "W.C. Bonnerjee",
+          "role": "First President"
+        }
+      ],
+      "impact": "Became the primary vehicle for India's independence movement",
+      "eventType": "CongressSession"
+    },
+    {
+      "year": 1905,
+      "eventName": "Partition of Bengal",
+      "description": "Lord Curzon partitioned Bengal, sparking widespread protests and the Swadeshi movement.",
+      "personalities": [
+        {
+          "name": "Lord Curzon",
+          "role": "Viceroy who ordered partition"
+        },
+        {
+          "name": "Surendranath Banerjee",
+          "role": "Led anti-partition movement"
+        }
+      ],
+      "impact": "United Indians against British rule and sparked nationalist sentiment",
+      "eventType": "Movement"
+    },
+    {
+      "year": 1919,
+      "eventName": "Jallianwala Bagh Massacre",
+      "description": "British troops under General Dyer fired on unarmed civilians in Amritsar, killing hundreds.",
+      "personalities": [
+        {
+          "name": "General Dyer",
+          "role": "Commander who ordered firing"
+        },
+        {
+          "name": "Udham Singh",
+          "role": "Revolutionary who avenged the massacre"
+        }
+      ],
+      "impact": "Turned public opinion against British rule and radicalized the freedom movement",
+      "eventType": "Other"
+    },
+    {
+      "year": 1920,
+      "eventName": "Non-Cooperation Movement",
+      "description": "Gandhi launched the Non-Cooperation Movement, urging Indians to boycott British institutions.",
+      "personalities": [
+        {
+          "name": "Mahatma Gandhi",
+          "role": "Leader of the movement"
+        },
+        {
+          "name": "Motilal Nehru",
+          "role": "Congress leader who supported"
+        }
+      ],
+      "impact": "First mass movement involving millions of Indians",
+      "eventType": "Movement"
+    },
+    {
+      "year": 1930,
+      "eventName": "Salt March (Dandi March)",
+      "description": "Gandhi led a 240-mile march to make salt, defying British salt monopoly.",
+      "personalities": [
+        {
+          "name": "Mahatma Gandhi",
+          "role": "Leader of the march"
+        },
+        {
+          "name": "Sarojini Naidu",
+          "role": "Prominent participant"
+        }
+      ],
+      "impact": "Gained worldwide attention and demonstrated power of civil disobedience",
+      "eventType": "Movement"
+    },
+    {
+      "year": 1942,
+      "eventName": "Quit India Movement",
+      "description": "Gandhi's call for immediate British withdrawal with the slogan 'Do or Die'.",
+      "personalities": [
+        {
+          "name": "Mahatma Gandhi",
+          "role": "Leader who gave the call"
+        },
+        {
+          "name": "Aruna Asaf Ali",
+          "role": "Hoisted flag at Gowalia Tank"
+        }
+      ],
+      "impact": "Final major push that made British rule untenable",
+      "eventType": "Movement"
+    },
+    {
+      "year": 1947,
+      "eventName": "Independence Day",
+      "description": "India gained independence from British rule on August 15, 1947.",
+      "personalities": [
+        {
+          "name": "Jawaharlal Nehru",
+          "role": "First Prime Minister"
+        },
+        {
+          "name": "Lord Mountbatten",
+          "role": "Last Viceroy"
+        }
+      ],
+      "impact": "End of 200 years of British colonial rule",
+      "eventType": "Other"
+    }
+  ]
+}

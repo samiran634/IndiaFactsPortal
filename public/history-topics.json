@@ -1,0 +1,74 @@
+{
+  "title": "A Concise History of India - Key Topics Reference",
+  "periods": [
+    {
+      "era": "Ancient India",
+      "topics": [
+        "Indus Valley Civilization (3300-1300 BCE)",
+        "Vedic Period and Aryan Migration",
+        "Maurya Empire - Chandragupta, Ashoka",
+        "Gupta Empire - Golden Age of India",
+        "Buddhism and Jainism origins",
+        "Ancient Indian Science and Mathematics"
+      ]
+    },
+    {
+      "era": "Medieval India",
+      "topics": [
+        "Delhi Sultanate (1206-1526)",
+        "Mughal Empire - Babur to Aurangzeb",
+        "Vijayanagara Empire",
+        "Bhakti and Sufi Movements",
+        "Maratha Empire - Shivaji",
+        "Sikh Empire - Ranjit Singh"
+      ]
+    },
+    {
+      "era": "Freedom Struggle (1857-1947)",
+      "topics": [
+        "1857 Revolt - Mangal Pandey, Rani Lakshmibai, Tantia Tope",
+        "Indian National Congress Formation 1885",
+        "Partition of Bengal 1905 and Swadeshi Movement",
+        "Revolutionary Movement - Bhagat Singh, Chandrashekhar Azad",
+        "Gandhi's Satyagraha - Non-Cooperation, Civil Disobedience",
+        "Salt March 1930 - Dandi March",
+        "Quit India Movement 1942",
+        "INA and Subhas Chandra Bose",
+        "Partition and Independence 1947"
+      ]
+    },
+    {
+      "era": "Modern India",
+      "topics": [
+        "Constitution of India - Dr. B.R. Ambedkar",
+        "Five Year Plans and Economic Development",
+        "Wars - 1962, 1965, 1971, Kargil 1999",
+        "Green Revolution",
+        "Emergency 1975-77",
+        "Economic Liberalization 1991",
+        "Nuclear Tests - Pokhran I & II",
+        "Space Program - ISRO achievements"
+      ]
+    }
+  ],
+  "keyPersonalities": [
+    {"name": "Mahatma Gandhi", "contribution": "Father of the Nation, Non-violence"},
+    {"name": "Jawaharlal Nehru", "contribution": "First Prime Minister, Modern India architect"},
+    {"name": "Sardar Patel", "contribution": "Iron Man, Integration of princely states"},
+    {"name": "Subhas Chandra Bose", "contribution": "INA, Azad Hind"},
+    {"name": "Bhagat Singh", "contribution": "Revolutionary, Inquilab Zindabad"},
+    {"name": "Dr. B.R. Ambedkar", "contribution": "Constitution architect, Social reformer"},
+    {"name": "Rani Lakshmibai", "contribution": "1857 Revolt, Jhansi"},
+    {"name": "Chandrashekhar Azad", "contribution": "Revolutionary, HSRA"},
+    {"name": "Lala Lajpat Rai", "contribution": "Punjab Kesari, Simon Commission protest"},
+    {"name": "Bal Gangadhar Tilak", "contribution": "Swaraj is my birthright"}
+  ],
+  "importantDates": [
+    {"date": "1857-05-10", "event": "First War of Independence begins"},
+    {"date": "1885-12-28", "event": "Indian National Congress founded"},
+    {"date": "1919-04-13", "event": "Jallianwala Bagh Massacre"},
+    {"date": "1930-03-12", "event": "Salt March begins"},
+    {"date": "1942-08-08", "event": "Quit India Movement launched"},
+    {"date": "1947-08-15", "event": "Independence Day"}
+  ]
+}

@@ -1,0 +1,321 @@
+# Implementation Plan
+
+- [x] 1. Set up project structure and core types
+
+
+
+
+
+
+  - [x] 1.1 Initialize Next.js 14 project with TypeScript and Tailwind CSS
+
+    - Configure App Router structure
+    - Set up Tailwind CSS with custom theme colors
+    - Install dependencies: react-simple-maps, vitest, fast-check
+    - _Requirements: 8.1, 8.3_
+
+
+  - [ ] 1.2 Create TypeScript interfaces for all data types
+    - Define Fact, TimelineEvent, MapElement, CurrentAffairsEntry interfaces
+    - Define Module, Category, EventType, MapElementType, VaultCategory types
+    - Define Bookmark, SearchResult, FilterState interfaces
+    - _Requirements: 9.1, 9.4, 9.5_
+  - [ ]* 1.3 Write property test for data structure validation
+    - **Property 31: Data Structure Contains Required Fields By Type**
+    - **Validates: Requirements 9.1, 9.4, 9.5**
+
+- [ ] 2. Implement data layer and validation
+  - [ ] 2.1 Create JSON data files with sample data
+    - Create freedom-scroll-data.json with 10 sample timeline events
+    - Create active-map-data.json with 10 sample map elements
+    - Create dynamic-vault-data.json with 10 sample current affairs entries
+    - _Requirements: 9.1, 9.4, 9.5_
+  - [ ] 2.2 Implement data validation utilities
+    - Create validateFact function for base fact validation
+    - Create validateTimelineEvent for timeline-specific validation
+    - Create validateMapElement for map-specific validation
+    - Create validateCurrentAffairsEntry for vault-specific validation
+    - _Requirements: 9.3_
+  - [ ]* 2.3 Write property test for data validation
+    - **Property 30: Data Validation Catches Invalid Fields**
+    - **Validates: Requirements 9.3**
+  - [ ] 2.4 Implement JSON serialization/deserialization utilities
+    - Create serializeFact and deserializeFact functions
+    - Handle date string conversion
+    - _Requirements: 9.2_
+  - [ ]* 2.5 Write property test for JSON round-trip
+    - **Property 29: Fact JSON Serialization Round-Trip**
+    - **Validates: Requirements 9.2**
+
+- [ ] 3. Implement data service
+  - [ ] 3.1 Create DataService for loading and accessing facts
+    - Implement getTimelineEvents, getMapElements, getCurrentAffairs
+    - Implement getFactById and getRelatedFacts
+    - _Requirements: 5.1, 5.4_
+
+- [ ] 4. Checkpoint
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement filter service
+  - [ ] 5.1 Create FilterService with core filtering logic
+    - Implement applyFilters function with AND logic for multiple filters
+    - Implement getFilterCount function
+    - Implement clearFilters function
+    - _Requirements: 7.1, 7.2, 7.3, 7.4_
+  - [ ]* 5.2 Write property tests for filter service
+    - **Property 24: Subcategory Filter Returns Matches**
+    - **Property 25: Multiple Filters Use AND Logic**
+    - **Property 26: Clear Filters Restores All Facts**
+    - **Property 27: Filter Count Matches Results Length**
+    - **Validates: Requirements 7.1, 7.2, 7.3, 7.4**
+  - [ ] 5.3 Implement year range filtering for Dynamic Vault
+    - Filter entries by start and end year
+    - _Requirements: 3.5_
+  - [ ]* 5.4 Write property test for year range filter
+    - **Property 13: Year Range Filter Accuracy**
+    - **Validates: Requirements 3.5**
+  - [ ] 5.5 Implement category filtering with sort
+    - Filter by vaultCategory
+    - Sort results by year descending
+    - _Requirements: 3.6_
+  - [ ]* 5.6 Write property test for category filter with sort
+    - **Property 14: Category Filter With Descending Sort**
+    - **Validates: Requirements 3.6**
+  - [ ] 5.7 Implement event type filtering for Freedom Scroll
+    - Filter timeline events by eventType
+    - _Requirements: 1.4_
+  - [ ]* 5.8 Write property test for event type filter
+    - **Property 4: Event Type Filter Accuracy**
+    - **Validates: Requirements 1.4**
+
+- [ ] 6. Implement search service
+  - [ ] 6.1 Create SearchService with cross-module search
+    - Implement search function that searches across all modules
+    - Include module identifier in each result
+    - Calculate relevance score
+    - _Requirements: 4.1, 4.2_
+  - [ ]* 6.2 Write property test for cross-module search
+    - **Property 15: Cross-Module Search Returns Matches With Module Info**
+    - **Validates: Requirements 4.1, 4.2**
+  - [ ] 6.3 Implement search term highlighting
+    - Create highlightMatches function
+    - Wrap matched terms with highlight markers
+    - _Requirements: 4.3_
+  - [ ]* 6.4 Write property test for search highlighting
+    - **Property 16: Search Term Highlighting**
+    - **Validates: Requirements 4.3**
+  - [ ] 6.5 Implement search suggestions for empty results
+    - Generate category suggestions
+    - Generate alternative search terms
+    - _Requirements: 4.4_
+
+- [ ] 7. Checkpoint
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 8. Implement bookmark service
+  - [ ] 8.1 Create BookmarkService with localStorage persistence
+    - Implement addBookmark and removeBookmark functions
+    - Implement getBookmarks and isBookmarked functions
+    - Handle localStorage unavailability gracefully
+    - _Requirements: 6.1, 6.3, 6.4_
+  - [ ]* 8.2 Write property tests for bookmark operations
+    - **Property 20: Bookmark Round-Trip Persistence**
+    - **Property 22: Bookmark Removal**
+    - **Validates: Requirements 6.1, 6.3, 6.4**
+  - [ ] 8.3 Implement bookmark organization by module and category
+    - Group bookmarks by module first, then by category
+    - _Requirements: 6.2_
+  - [ ]* 8.4 Write property test for bookmark organization
+    - **Property 21: Bookmarks Organized By Module And Category**
+    - **Validates: Requirements 6.2**
+  - [ ] 8.5 Implement bookmark filtering by module
+    - Filter bookmarks to show only selected module
+    - _Requirements: 6.5_
+  - [ ]* 8.6 Write property test for bookmark module filter
+    - **Property 23: Bookmark Filter By Module**
+    - **Validates: Requirements 6.5**
+
+- [ ] 9. Implement timeline utilities for Freedom Scroll
+  - [ ] 9.1 Create timeline sorting and grouping functions
+    - Sort events chronologically by year
+    - Group events by year
+    - _Requirements: 1.1, 1.5_
+  - [ ]* 9.2 Write property tests for timeline utilities
+    - **Property 1: Timeline Events Chronological Order**
+    - **Property 5: Events Grouped By Year**
+    - **Validates: Requirements 1.1, 1.5**
+  - [ ] 9.3 Implement year selection filter
+    - Filter events by selected year for side panel
+    - _Requirements: 1.3_
+  - [ ]* 9.4 Write property test for year selection
+    - **Property 3: Year Selection Filters Events**
+    - **Validates: Requirements 1.3**
+
+- [ ] 10. Implement map utilities for Active Map
+  - [ ] 10.1 Create layer toggle state management
+    - Implement toggle function that inverts layer visibility
+    - _Requirements: 2.2_
+  - [ ]* 10.2 Write property test for layer toggle
+    - **Property 6: Layer Toggle State Consistency**
+    - **Validates: Requirements 2.2**
+  - [ ] 10.3 Create tooltip content generator
+    - Generate tooltip with name, state, connections
+    - _Requirements: 2.3_
+  - [ ]* 10.4 Write property test for tooltip content
+    - **Property 7: Tooltip Contains Required Details**
+    - **Validates: Requirements 2.3**
+  - [ ] 10.5 Implement 5-year window filter for defence facts
+    - Filter related facts to only those within 5 years
+    - _Requirements: 2.4_
+  - [ ]* 10.6 Write property test for 5-year window filter
+    - **Property 8: Defence Facts Within 5-Year Window**
+    - **Validates: Requirements 2.4**
+
+- [ ] 11. Checkpoint
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 12. Implement shared UI components
+  - [ ] 12.1 Create Navigation component
+    - Module navigation links
+    - Global search input
+    - Responsive hamburger menu for mobile
+    - _Requirements: 8.1, 8.2_
+  - [ ] 12.2 Create BookmarkButton component
+    - Toggle bookmark state on click
+    - Show filled/unfilled icon based on state
+    - _Requirements: 6.1_
+  - [ ] 12.3 Create FactDetailModal component
+    - Display title, content, source, category, subcategory, module, lastUpdated
+    - Display related facts as links
+    - _Requirements: 5.1, 5.2, 5.3, 5.4_
+  - [ ]* 12.4 Write property test for fact display completeness
+    - **Property 17: Fact Display Contains All Required Fields**
+    - **Validates: Requirements 5.1, 5.2, 5.3**
+  - [ ] 12.5 Create SearchResults component
+    - Display results with module badges
+    - Highlight matched terms
+    - _Requirements: 4.1, 4.2, 4.3_
+  - [ ] 12.6 Create FilterBadge and FilterPanel components
+    - Display active filters with count
+    - Clear filter buttons
+    - _Requirements: 7.3, 7.4_
+
+- [ ] 13. Implement Freedom Scroll page
+  - [ ] 13.1 Create Timeline container component
+    - Vertical scrolling timeline layout
+    - Year markers on the side
+    - _Requirements: 1.1, 1.6_
+  - [ ] 13.2 Create EventCard component
+    - Display year, eventName, personalities, impact
+    - Bookmark button integration
+    - _Requirements: 1.2_
+  - [ ]* 13.3 Write property test for event card display
+    - **Property 2: Timeline Event Display Completeness**
+    - **Validates: Requirements 1.2**
+  - [ ] 13.4 Create SidePanel component for year details
+    - Show all events for selected year
+    - _Requirements: 1.3_
+  - [ ] 13.5 Create EventTypeFilter component
+    - Filter buttons for Revolts, Congress Sessions, Governor-Generals, Movements
+    - _Requirements: 1.4_
+  - [ ] 13.6 Create PersonalityDisplay component
+    - Show personality name, role, description
+    - _Requirements: 5.5_
+  - [ ]* 13.7 Write property test for personality display
+    - **Property 19: Historical Event Shows Personalities**
+    - **Validates: Requirements 5.5**
+
+- [ ] 14. Implement Active Map page
+  - [ ] 14.1 Create MapContainer with react-simple-maps
+    - Render India SVG map with state boundaries
+    - Support zoom and pan
+    - _Requirements: 2.1, 8.4_
+  - [ ] 14.2 Create LayerToggle panel
+    - Toggle buttons for Rivers, Mountain Passes, National Parks, Air Force Bases, Naval Bases
+    - _Requirements: 2.2_
+  - [ ] 14.3 Create MapTooltip component
+    - Show on hover with element details
+    - _Requirements: 2.3_
+  - [ ] 14.4 Create InfoPanel component
+    - Show detailed info on element click
+    - Display pinned defence facts
+    - _Requirements: 2.4, 2.6_
+  - [ ] 14.5 Implement map markers for each layer type
+    - Different icons/colors for each element type
+    - _Requirements: 2.5_
+
+- [ ] 15. Checkpoint
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 16. Implement Dynamic Vault page
+  - [ ] 16.1 Create VaultContainer with category tabs
+    - Tabs for Defence Deals, International Summits, Awards, Government Schemes, Economic Developments
+    - _Requirements: 3.1_
+  - [ ]* 16.2 Write property test for category grouping
+    - **Property 9: Current Affairs Category Grouping**
+    - **Validates: Requirements 3.1**
+  - [ ] 16.3 Create DefenceDealCard component
+    - Display deal name, countries, equipment, strategic significance
+    - _Requirements: 3.2_
+  - [ ]* 16.4 Write property test for defence deal display
+    - **Property 10: Defence Deal Display Completeness**
+    - **Validates: Requirements 3.2**
+  - [ ] 16.5 Create SummitCard component
+    - Display summit name, host country, year, outcomes, India's role
+    - _Requirements: 3.3_
+  - [ ]* 16.6 Write property test for summit display
+    - **Property 11: Summit Display Completeness**
+    - **Validates: Requirements 3.3**
+  - [ ] 16.7 Create AwardCard component
+    - Display award name, recipient, year, achievement
+    - _Requirements: 3.4_
+  - [ ]* 16.8 Write property test for award display
+    - **Property 12: Award Display Completeness**
+    - **Validates: Requirements 3.4**
+  - [ ] 16.9 Create YearRangeFilter component
+    - Slider or dropdown for year range selection
+    - _Requirements: 3.5_
+
+- [ ] 17. Implement Bookmarks page
+  - [ ] 17.1 Create BookmarksPage with module/category organization
+    - Group bookmarks by module, then category
+    - Module filter tabs
+    - _Requirements: 6.2, 6.5_
+  - [ ] 17.2 Implement bookmark removal from list
+    - Remove button on each bookmark
+    - Immediate UI update on removal
+    - _Requirements: 6.3_
+
+- [ ] 18. Implement filter state persistence
+  - [ ] 18.1 Create FilterContext for global filter state
+    - Store filter state per module
+    - Preserve state on navigation
+    - _Requirements: 7.5_
+  - [ ]* 18.2 Write property test for filter state preservation
+    - **Property 28: Filter State Preserved Per Module**
+    - **Validates: Requirements 7.5**
+
+- [ ] 19. Implement related facts display
+  - [ ] 19.1 Add related facts section to FactDetailModal
+    - Fetch and display related facts as clickable links
+    - _Requirements: 5.4_
+  - [ ]* 19.2 Write property test for related facts display
+    - **Property 18: Related Facts Displayed As Links**
+    - **Validates: Requirements 5.4**
+
+- [ ] 20. Implement responsive design
+  - [ ] 20.1 Add responsive breakpoints to all components
+    - Mobile-first approach with Tailwind breakpoints
+    - Minimum 44x44px tap targets
+    - _Requirements: 8.1, 8.2, 8.3_
+  - [ ] 20.2 Implement mobile-specific Freedom Scroll layout
+    - Simplified vertical layout
+    - Expandable event cards
+    - _Requirements: 8.5_
+  - [ ] 20.3 Implement mobile map gestures
+    - Pinch-to-zoom support
+    - Pan gesture support
+    - _Requirements: 8.4_
+
+- [ ] 21. Final Checkpoint
+  - Ensure all tests pass, ask the user if questions arise.
