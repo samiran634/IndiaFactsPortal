@@ -7,7 +7,7 @@ import { mapLayers, layerColors, LayerType, TooltipData } from './MapComponent';
 const MapChart = dynamic(() => import('./MapComponent'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
+    <div className="w-full h-full bg-linear-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
         <p className="text-blue-600 font-medium">Loading India Map...</p>

@@ -2,12 +2,15 @@ import Link from "next/link";
 import { FreedomScrollContent } from "./index";
 import { getRandomHistoryFacts } from "./data";
 
+// Force dynamic rendering to get fresh random facts each time
+export const dynamic = 'force-dynamic';
+
 // Server Component - fetches random facts on each page load
 export default async function FreedomScrollPage() {
   const { facts, error } = await getRandomHistoryFacts();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-orange-50 to-amber-50">
+    <main className="min-h-screen bg-linear-to-b from-orange-50 to-amber-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -22,7 +25,7 @@ export default async function FreedomScrollPage() {
       </header>
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-orange-600 to-amber-500 text-white py-10 px-4">
+      <div className="bg-linear-to-r from-orange-600 to-amber-500 text-white py-10 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-3">
             Indian History & Current Affairs
@@ -40,6 +43,3 @@ export default async function FreedomScrollPage() {
     </main>
   );
 }
-
-// Force dynamic rendering to get fresh random facts each time
-export const dynamic = 'force-dynamic';
