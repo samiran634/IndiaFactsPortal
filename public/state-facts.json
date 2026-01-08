@@ -1,0 +1,362 @@
+{
+    "Andaman and Nicobar Islands": {
+        "facts": [
+            "Home to the Sentinelese people, one of the last uncontacted tribes.",
+            "India's only active volcano is on Barren Island."
+        ],
+        "concepts": [
+            "Strategic importance in the Bay of Bengal.",
+            "Maritime borders with Southeast Asia."
+        ]
+    },
+    "Andhra Pradesh": {
+        "facts": [
+            "Known as the 'Rice Bowl of India'.",
+            "Features the Tirumala Venkateswara Temple, one of the richest in the world."
+        ],
+        "concepts": [
+            "Linguistic reorganization of states (1953).",
+            "Kuchipudi classical dance form."
+        ]
+    },
+    "Arunachal Pradesh": {
+        "facts": [
+            "Known as the 'Land of the Dawn-Lit Mountains'.",
+            "Tawang Monastery is the largest monastery in India."
+        ],
+        "concepts": [
+            "Strategic border state (McMahon Line).",
+            "High biodiversity hotspot."
+        ]
+    },
+    "Assam": {
+        "facts": [
+            "Famous for Assam tea and Assam silk.",
+            "Kaziranga National Park hosts two-thirds of the world's great one-horned rhinoceroses."
+        ],
+        "concepts": [
+            "Brahmaputra river system dynamics.",
+            "Ahoms kingdom history."
+        ]
+    },
+    "Bihar": {
+        "facts": [
+            "Birthplace of Buddhism and Jainism.",
+            "Nalanda University was an ancient center of learning."
+        ],
+        "concepts": [
+            "Mauryan Empire heartland.",
+            "Challenges of population density and flooding."
+        ]
+    },
+    "Chandigarh": {
+        "facts": [
+            "Designed by Le Corbusier.",
+            "Shared capital of Punjab and Haryana."
+        ],
+        "concepts": [
+            "Planned city architecture.",
+            "Union Territory administration model."
+        ]
+    },
+    "Chhattisgarh": {
+        "facts": [
+            "Known as the 'Rice Bowl of Central India'.",
+            "Chitrakote Falls is often called the 'Niagara of India'."
+        ],
+        "concepts": [
+            "Mineral resources (Coal, Iron ore).",
+            "Tribal culture and demographics."
+        ]
+    },
+    "Dadra and Nagar Haveli and Daman and Diu": {
+        "facts": [
+            "Former Portuguese colonies.",
+            "Merged into a single UT in 2020."
+        ],
+        "concepts": [
+            "Colonial history distinct from British India.",
+            "Coastal administration."
+        ]
+    },
+    "Delhi": {
+        "facts": [
+            "Capital of India, continuously inhabited since the 6th century BCE.",
+            "Red Fort and Qutub Minar are UNESCO World Heritage Sites."
+        ],
+        "concepts": [
+            "National Capital Territory (NCT) governance.",
+            "Mughal and British architectural legacy."
+        ]
+    },
+    "Goa": {
+        "facts": [
+            "India's smallest state by area.",
+            "Liberated from Portuguese rule in 1961 (Operation Vijay)."
+        ],
+        "concepts": [
+            "Uniform Civil Code implementation.",
+            "Tourism economy."
+        ]
+    },
+    "Gujarat": {
+        "facts": [
+            "Longest coastline in India (~1600 km).",
+            "Home to the Asiatic Lion in Gir Forest."
+        ],
+        "concepts": [
+            "Harappan civilization sites (Lothal, Dholavira).",
+            "Cooperative movement (Amul)."
+        ]
+    },
+    "Haryana": {
+        "facts": [
+            "Site of the Battle of Mahabharata (Kurukshetra).",
+            "Leading state in sports contributions (Olympics)."
+        ],
+        "concepts": [
+            "Green Revolution impact.",
+            "Indus-Sarasvati civilization sites (Rakhigarhi)."
+        ]
+    },
+    "Himachal Pradesh": {
+        "facts": [
+            "Known as 'Dev Bhoomi' (Land of Gods).",
+            "Home to the Dalai Lama in Dharamshala."
+        ],
+        "concepts": [
+            "Hydroelectric power potential.",
+            "Himalayan ecology."
+        ]
+    },
+    "Jammu and Kashmir": {
+        "facts": [
+            "Famous for the Dal Lake and Mughal Gardens.",
+            "Saffron cultivation in Pampore."
+        ],
+        "concepts": [
+            "Article 370 abrogation (2019).",
+            "Strategic importance and L.O.C."
+        ]
+    },
+    "Jharkhand": {
+        "facts": [
+            "Accounts for 40% of India's mineral resources.",
+            "Beta National Park is famous for wolves."
+        ],
+        "concepts": [
+            "Tribal movements (Birsa Munda).",
+            "Industrialization (Tata Steel, Jamshedpur)."
+        ]
+    },
+    "Karnataka": {
+        "facts": [
+            "Silicon Valley of India (Bengaluru).",
+            "Hampi (Vijayanagara Empire) UNESCO site."
+        ],
+        "concepts": [
+            "IT and Biotech industry.",
+            "Coffee production origins (Baba Budan Giri)."
+        ]
+    },
+    "Kerala": {
+        "facts": [
+            "Highest literacy rate in India.",
+            "Famous for backwaters and Ayurveda."
+        ],
+        "concepts": [
+            "Kerala Model of Development (Health, Education).",
+            "Spice trade history."
+        ]
+    },
+    "Ladakh": {
+        "facts": [
+            "Home to the highest motorable road (Umling La).",
+            "Pangong Tso lake changes colors."
+        ],
+        "concepts": [
+            "Cold Desert ecology.",
+            "Strategic border with China (LAC)."
+        ]
+    },
+    "Lakshadweep": {
+        "facts": [
+            "Coral islands off the Kerala coast.",
+            "Smallest Union Territory."
+        ],
+        "concepts": [
+            "Coral reef ecosystem.",
+            "Maritime security."
+        ]
+    },
+    "Madhya Pradesh": {
+        "facts": [
+            "Heart of India; largest forest cover.",
+            "Khajuraho temples famous for Nagara style architecture."
+        ],
+        "concepts": [
+            "Tiger State of India.",
+            "Central Indian plateaus."
+        ]
+    },
+    "Maharashtra": {
+        "facts": [
+            "Mumbai is the financial capital of India.",
+            "Ajanta and Ellora Caves (Buddhist, Hindu, Jain)."
+        ],
+        "concepts": [
+            "Maratha Confederacy history.",
+            "Deccan Trap geology."
+        ]
+    },
+    "Manipur": {
+        "facts": [
+            "Loktak Lake is the only floating lake in the world.",
+            "Birthplace of modern Polo (Sagol Kangjei)."
+        ],
+        "concepts": [
+            "Inner Line Permit system.",
+            "Keibul Lamjao National Park (Sangai deer)."
+        ]
+    },
+    "Meghalaya": {
+        "facts": [
+            "Mawsynram is the wettest place on Earth.",
+            "Famous for Living Root Bridges."
+        ],
+        "concepts": [
+            "Matrilineal society of Khasis, Garos.",
+            "Karst topography (caves)."
+        ]
+    },
+    "Mizoram": {
+        "facts": [
+            "Known for 'Chapchar Kut' festival.",
+            "Blue Mountain (Phawngpui) is the highest peak."
+        ],
+        "concepts": [
+            "Bamboo flowering cycles (Mautam).",
+            "Peace Accord 1986 model."
+        ]
+    },
+    "Nagaland": {
+        "facts": [
+            "Land of Festivals (Hornbill Festival).",
+            "Home to the fierce Naga tribes."
+        ],
+        "concepts": [
+            "Article 371A special provisions.",
+            "Battle of Kohima (WWII)."
+        ]
+    },
+    "Odisha": {
+        "facts": [
+            "Konark Sun Temple is a UNESCO site.",
+            "Chilika Lake is the largest brackish water lagoon."
+        ],
+        "concepts": [
+            "Kalinga War and Ashoka's conversion.",
+            "Odissi dance form."
+        ]
+    },
+    "Puducherry": {
+        "facts": [
+            "Former French colony.",
+            "Auroville experimental township."
+        ],
+        "concepts": [
+            "French influence on architecture and law.",
+            "Territory scattered across three states."
+        ]
+    },
+    "Punjab": {
+        "facts": [
+            "Land of Five Rivers.",
+            "Golden Temple (Harmandir Sahib) in Amritsar."
+        ],
+        "concepts": [
+            "Granary of India (wheat production).",
+            "Sikhism history."
+        ]
+    },
+    "Rajasthan": {
+        "facts": [
+            "Largest state by area.",
+            "Thar Desert and Aravalli Range (oldest fold mountains)."
+        ],
+        "concepts": [
+            "Rajput architecture (Forts).",
+            "Desertification control."
+        ]
+    },
+    "Sikkim": {
+        "facts": [
+            "First organic state in the world.",
+            "Kanchenjunga is the third highest mountain in the world."
+        ],
+        "concepts": [
+            "Accession to India (1975).",
+            "Himalayan biodiversity."
+        ]
+    },
+    "Tamil Nadu": {
+        "facts": [
+            "Home to the oldest living classical language (Tamil).",
+            "Brihadeeswarar Temple (Chola architecture)."
+        ],
+        "concepts": [
+            "Dravidian movement politics.",
+            "Carnatic music tradition."
+        ]
+    },
+    "Telangana": {
+        "facts": [
+            "Youngest state of India (formed 2014).",
+            "Charminar and Golconda Fort in Hyderabad."
+        ],
+        "concepts": [
+            "Telangana movement history.",
+            "Kakatiya dynasty irrigation tanks."
+        ]
+    },
+    "Tripura": {
+        "facts": [
+            "Ujjayanta Palace and Neermahal.",
+            "Bordered by Bangladesh on three sides."
+        ],
+        "concepts": [
+            "Manikya dynasty history.",
+            "Rubber plantation economy."
+        ]
+    },
+    "Uttar Pradesh": {
+        "facts": [
+            "Most populous state in India.",
+            "Taj Mahal in Agra, Varanasi (oldest living city)."
+        ],
+        "concepts": [
+            "Ganga-Yamuna Doab fertility.",
+            "Political center of Hindi heartland."
+        ]
+    },
+    "Uttarakhand": {
+        "facts": [
+            "Origin of Ganga and Yamuna rivers.",
+            "Chipko Movement started here."
+        ],
+        "concepts": [
+            "Char Dham Yatra pilgrimage.",
+            "Ecological fragility of Himalayas."
+        ]
+    },
+    "West Bengal": {
+        "facts": [
+            "Sundarbans (largest mangrove forest).",
+            "Victoria Memorial and Howrah Bridge."
+        ],
+        "concepts": [
+            "Bengal Renaissance.",
+            "Durga Puja cultural significance."
+        ]
+    }
+}
