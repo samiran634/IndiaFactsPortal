@@ -7,11 +7,9 @@ export const Card = (props) => {
       className={`
     
         bg-zinc-900/80  
-        border border-zinc-800 
-        rounded-xl           
+        border border-zinc-800         
         p-6                
-        text-zinc-100      
-        shadow-xl     
+        text-zinc-100   
       `}
     >
       {props.title && (

@@ -4,41 +4,51 @@ import React, { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Card } from "./utils/card";
  
+/*
+  the json data will contain 
+  number of images it contains above the card itself
+  folder name in public/images
+  title
+  description
+  link to more details
+
+
+*/
 const SECTIONS = [
   {
     id: "freedom",
     title: "Freedom Scroll",
     folder: "till_1889", // Folder name in public/images
     count: 12,           // Number of images
-    description: "Welcome to the Freedom Scroll phase.",
+    description: "Welcome to the Freedom Scroll phase. Discover historical facts leading up to 1889.",
     sympho: "today",  // Image prefix
     format: "jpg",  // Image format
-    link: "/freedom",
+    link: "/freedom-scroll", // Link for the card
   },
   {
     id: "map",
     title: "Active Map",
     folder: "geography",
     count: 6,
-    description: "Engaging the Active Map coordinates.",
+    description: "Engaging the Active Map coordinates. Explore geographical facts interactively.",
     sympho: "download",
     format: "jpeg",
-    link: "/map",
+    link: "/active-map",
   },
   {
     id: "vault",
     title: "Dynamic Vault",
-    folder: "dynamic_vault",
-    count: 10,
-    description: "Unlocking the final Dynamic Vault.",
-    sympho: "image",
+    folder: "current",
+    count: 5,
+    description: "Current facts are displayed here daily. You must check in every day!",
+    sympho: "photo",
     format: "png",
-    link: "/vault",
+    link: "/dynamic-vault",
   }
 ];
 
-const SCROLL_PER_IMG = 400;
-const CARD_BUFFER = 1000; 
+const SCROLL_PER_IMG = 200;
+const CARD_BUFFER = 1400; 
 
 export default function Home() {
   // --- STATE ---
@@ -56,6 +66,15 @@ export default function Home() {
 
 
   // --- THE MATH ENGINE ---
+  /*
+    each section has count number of images 
+    each image should take less scroll as it is just to create a flash animation 
+    after all images are shown, a buffer scroll to show the card
+    
+    so show much per section will consum is = (count * SCROLL_PER_IMG) + CARD_BUFFER
+
+  */
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -69,19 +88,20 @@ export default function Home() {
         
         const sectionStart = accumulatedHeight;
         const sectionEnd = sectionStart + totalSectionHeight;
-        if (scrollY >= sectionStart && scrollY < sectionEnd) {
+       
+        if (scrollY >= sectionStart && scrollY <= sectionEnd) {
           const relativeScroll = scrollY - sectionStart;
           if (relativeScroll < imagePhaseHeight) {
              // --- IMAGE PHASE ---
              // Calculate countdown index (e.g. 12 -> 1)
              const rawIndex = Math.floor(relativeScroll / SCROLL_PER_IMG);
              const currentCount = section.count - rawIndex;
-             
+             const isHeadVisible = i===0 && relativeScroll <=300;
              setActiveData({
                sectionIndex: i,
                imgIndex: currentCount < 1 ? 1 : currentCount,
                showCard: false,
-               bgPosition: "center" 
+               bgPosition: isHeadVisible? "left" : "center"
              });
           } else {
              setActiveData({
@@ -111,9 +131,8 @@ export default function Home() {
 
 
   return (
-    <motion.main className="bg-black min-h-screen w-screen relative">
+    <motion.main className="bg-black min-h-screen w-screen relative no-scrollbar">
       
-      {/* HEADER */}
       <motion.div 
         style={{ opacity: headerOpacity, y: headerY }}
         className="fixed top-0 left-0 w-full flex justify-between px-4 z-20 pt-4 pointer-events-none"
@@ -133,13 +152,12 @@ export default function Home() {
          
          <motion.div
            animate={{ 
-             x: activeData.bgPosition === "left" ? "-25%" : "0%",
-             scale: activeData.bgPosition === "left" ? 0.9 : 1
+             x: activeData.bgPosition === "left" ? "-35%" : "0%",
+             scale: activeData.bgPosition === "left" ? 0.8 : 1
            }}
            transition={{ type: "spring", stiffness: 50, damping: 20 }}
            className="relative h-[75%] w-[85%] flex items-center justify-center overflow-hidden border border-zinc-800 rounded-2xl shadow-2xl shadow-amber-900/40 bg-zinc-900"
          >
-            {/* DYNAMIC IMAGE LOADING */}
             <motion.img
               key={`${currentSection.id}-${activeData.imgIndex}`} // Unique key forces re-render/fade
               src={`/images/${currentSection.folder}/${currentSection.sympho+activeData.imgIndex}.${currentSection.format}`} 
@@ -150,12 +168,13 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover"
             />
 
+         </motion.div>
             {activeData.showCard && (
               <motion.div
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 500 }} 
                 transition={{ delay: 0.5, duration: 1 }} 
-                className="absolute z-100 w-80"
+                className="absolute z-100 w-80 shadow-2xl shadow-black/40 rounded-lg"
               >
                 <Card title={currentSection.title}
                       description={currentSection.description}
@@ -164,8 +183,8 @@ export default function Home() {
                 />
               </motion.div>
             )}
-         </motion.div>
       </div>
+
       <div style={{ height: `${totalPageHeight + 1000}px` }}></div>
 
     </motion.main>

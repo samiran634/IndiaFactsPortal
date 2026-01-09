@@ -1,44 +1,117 @@
 import Link from "next/link";
-import { FreedomScrollContent } from "./index";
 import { getRandomHistoryFacts } from "./data";
+import { SamuraiScroll } from "../utils/scroll";
 
-// Force dynamic rendering to get fresh random facts each time
-export const dynamic = 'force-dynamic';
 
-// Server Component - fetches random facts on each page load
 export default async function FreedomScrollPage() {
   const { facts, error } = await getRandomHistoryFacts();
 
   return (
-    <main className="min-h-screen bg-linear-to-b from-orange-50 to-amber-50">
+    <main className="min-h-screen bg-black">
+      
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-gray-600 hover:text-gray-900 flex items-center gap-2 font-medium">
+      <header className="flex justify-between bg-zinc-900/50 backdrop-blur-sm shadow-sm sticky top-0 z-20 border-b border-zinc-800">
+         <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-2 font-medium p-4 transition-colors">
             ← Back to Home
           </Link>
-          <h1 className="text-xl font-bold text-orange-600 flex items-center gap-2">
-            📜 Freedom Scroll
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-gray-100 flex items-center gap-2 justify-center">
+            <span className="text-4xl">📜</span> Freedom Scroll
           </h1>
-          <div className="w-24"></div>
         </div>
+        <div className="w-24"></div> 
       </header>
 
-      {/* Hero Section */}
-      <div className="bg-linear-to-r from-orange-600 to-amber-500 text-white py-10 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Indian History & Current Affairs
-          </h2>
-          <p className="text-orange-100 text-lg max-w-2xl mx-auto">
-            Random history facts powered by Gemini AI + Search news by date
-          </p>
-        </div>
-      </div>
+      {/* Content Area */}
+      <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[80vh]">
+        
+        <SamuraiScroll width="max-w-4xl">
+            
+            {/* 1. Error Handling */}
+            {error && (
+              <div className="text-red-800 font-bold p-4 border border-red-800/20 bg-red-50/50 rounded text-center">
+                <p>The archives are temporarily closed.</p>
+                <p className="text-sm mt-2 text-red-700">{error}</p>
+              </div>
+            )}
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <FreedomScrollContent facts={facts} error={error} />
+            {/* 2. Success State */}
+            {!error && facts && (
+              <div className="space-y-12 text-left">
+                <div className="text-center border-b-2 border-amber-900/20 pb-6 mb-8">
+                  <h2 className="text-4xl font-bold text-amber-900 uppercase tracking-widest font-serif">
+                    Historical Chronicles
+                  </h2>
+                  <p className="text-amber-800/70 mt-2 font-serif italic">
+                    {facts[0]?.era || "Ancient Records"}
+                  </p>
+                </div>
+
+                {facts.map((fact, index) => (
+                  <div key={index} className="relative pb-8 border-b border-dashed border-amber-900/30 last:border-0">
+                    
+                    {/* Header: Year & Title */}
+                    <div className="flex items-baseline gap-3 mb-3">
+                      <span className="text-3xl font-serif font-bold text-red-900/80">
+                        {index + 1}.
+                      </span>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-amber-950 font-serif">
+                          {fact.title}
+                        </h3>
+                        {fact.year && (
+                          <span className="inline-block bg-amber-900/10 text-amber-900 text-xs font-bold px-2 py-1 rounded mt-1">
+                            Year: {fact.year}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
+                      {fact.content}
+                    </p>
+
+                    {/* Key Points Grid */}
+                    <div className="pl-8 mb-4">
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-amber-900/80 font-serif text-sm">
+                        {fact.keyPoints.map((point, i) => (
+                          <li key={i}>{point}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Personalities Tags */}
+                    {fact.personalities && fact.personalities.length > 0 && (
+                      <div className="pl-8 flex flex-wrap gap-2 mb-4">
+                        {fact.personalities.map((p, i) => (
+                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                            👤 {p.name} <span className="opacity-50">| {p.role}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Significance Note */}
+                    <div className="pl-8 mt-4 bg-amber-50 p-3 rounded-r-lg border-l-4 border-amber-600">
+                      <p className="text-sm text-amber-900 font-medium italic">
+                        <span className="font-bold not-italic">💡 Why it matters:</span> {fact.significance}
+                      </p>
+                    </div>
+
+                  </div>
+                ))}
+
+                <div className="pt-6 text-center">
+                  <p className="text-amber-800/40 font-serif italic text-xs">
+                    ~ Generated by The India Facts Portal ~
+                  </p>
+                </div>
+              </div>
+            )}
+
+        </SamuraiScroll>
+
       </div>
     </main>
   );
