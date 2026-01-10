@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-export const SamuraiScroll = ({ children, width = "max-w-3xl" }) => {
+export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVissible, setIsVisible]= useState(true);
 
   // VARIANTS: This defines the animation states
   const containerVariants = {
@@ -26,7 +27,11 @@ export const SamuraiScroll = ({ children, width = "max-w-3xl" }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-10 overflow-hidden">
+    <>
+    
+    {isVissible &&
+    
+    <div className="flex flex-col items-center justify-center py-10 absolute">
       
       {/* TRIGGER BUTTON (For demo purposes) */}
       {!isOpen && (
@@ -63,7 +68,7 @@ export const SamuraiScroll = ({ children, width = "max-w-3xl" }) => {
           variants={containerVariants}
           initial="closed"
           animate={isOpen ? "open" : "closed"}
-          className="relative h-[90%] bg-[#f2eecb] overflow-hidden shadow-2xl flex items-center justify-center"
+          className="relative h-[90%] bg-[#f2eecb] overflow-auto shadow-2xl flex items-center justify-center"
           style={{
              // OPTIONAL: Add a subtle paper texture pattern here
              backgroundImage: "url('https://www.transparenttextures.com/patterns/aged-paper.png')",
@@ -73,7 +78,58 @@ export const SamuraiScroll = ({ children, width = "max-w-3xl" }) => {
         >
            {/* Inner Content */}
            <motion.div variants={contentVariants} className="p-8 text-center font-serif text-amber-900 w-full">
-              {children}
+              <div key={index} className="relative pb-8 border-b border-dashed border-amber-900/30 last:border-0">
+                    
+                    {/* Header: Year & Title */}
+                    <div className="flex items-baseline gap-3 mb-3">
+                      <span className="text-3xl font-serif font-bold text-red-900/80">
+                        {index + 1}.
+                      </span>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-amber-950 font-serif">
+                          {fact.title}
+                        </h3>
+                        {fact.year && (
+                          <span className="inline-block bg-amber-900/10 text-amber-900 text-xs font-bold px-2 py-1 rounded mt-1">
+                            Year: {fact.year}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
+                      {fact.content}
+                    </p>
+
+                    {/* Key Points Grid */}
+                    <div className="pl-8 mb-4">
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-amber-900/80 font-serif text-sm">
+                        {fact.keyPoints.map((point, i) => (
+                          <li key={i}>{point}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Personalities Tags */}
+                    {fact.personalities && fact.personalities.length > 0 && (
+                      <div className="pl-8 flex flex-wrap gap-2 mb-4">
+                        {fact.personalities.map((p, i) => (
+                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                            👤 {p.name} <span className="opacity-50">| {p.role}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Significance Note */}
+                    <div className="pl-8 mt-4 bg-amber-50 p-3 rounded-r-lg border-l-4 border-amber-600">
+                      <p className="text-sm text-amber-900 font-medium italic">
+                        <span className="font-bold not-italic">💡 Why it matters:</span> {fact.significance}
+                      </p>
+                    </div>
+
+                  </div>
            </motion.div>
         </motion.div>
 
@@ -90,6 +146,24 @@ export const SamuraiScroll = ({ children, width = "max-w-3xl" }) => {
         </motion.div>
 
       </div>
-    </div>
+        {isOpen && (
+        <button 
+          onClick={() => {
+            setIsOpen(false)
+            setTimeout(()=>{
+              setIsVisible(false)
+            },1000)
+          }}
+          className="mb-8 px-6 py-3 bg-red-800 text-amber-100 font-bold tracking-widest uppercase border-2 border-amber-600 hover:bg-red-900 transition-colors"
+        >
+          close Decree
+        </button>
+      )}
+    </div>}
+    
+    
+    
+    </>
+    
   );
 };

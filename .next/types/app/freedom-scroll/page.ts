@@ -1,4 +1,4 @@
-// File: /home/sam/dev/github/cds_study/app/freedom-scroll/page.tsx
+// File: E:\GitHub\cds_study\app\freedom-scroll\page.tsx
 import * as entry from '../../../../app/freedom-scroll/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

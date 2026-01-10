@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { getRandomHistoryFacts } from "./data";
+import { getRandomHistoryFacts,getDefaultFacts } from "./data";
 import { SamuraiScroll } from "../utils/scroll";
 
 
 export default async function FreedomScrollPage() {
-  const { facts, error } = await getRandomHistoryFacts();
-
+  //const { facts, error } = await getRandomHistoryFacts();
+  const facts= getDefaultFacts();
+  const error=null;
+  
   return (
     <main className="min-h-screen bg-black">
       
@@ -25,7 +27,7 @@ export default async function FreedomScrollPage() {
       {/* Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[80vh]">
         
-        <SamuraiScroll width="max-w-4xl">
+       
             
             {/* 1. Error Handling */}
             {error && (
@@ -37,80 +39,31 @@ export default async function FreedomScrollPage() {
 
             {/* 2. Success State */}
             {!error && facts && (
-              <div className="space-y-12 text-left">
-                <div className="text-center border-b-2 border-amber-900/20 pb-6 mb-8">
-                  <h2 className="text-4xl font-bold text-amber-900 uppercase tracking-widest font-serif">
-                    Historical Chronicles
-                  </h2>
-                  <p className="text-amber-800/70 mt-2 font-serif italic">
-                    {facts[0]?.era || "Ancient Records"}
+              <div className="flex justify-center text-left h-screen w-screen flex-col">
+                <div className="flex text-center border-b-2 border-amber-900/20 pb-2 mb-4 px-1.5">
+                  <p className="text-amber-800/70 mt-0.5 font-serif italic mx-2">
+                    era={facts[0]?.era || "Ancient Records"}
                   </p>
                 </div>
-
+              <div className="flex justify-center">
                 {facts.map((fact, index) => (
-                  <div key={index} className="relative pb-8 border-b border-dashed border-amber-900/30 last:border-0">
-                    
-                    {/* Header: Year & Title */}
-                    <div className="flex items-baseline gap-3 mb-3">
-                      <span className="text-3xl font-serif font-bold text-red-900/80">
-                        {index + 1}.
-                      </span>
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-amber-950 font-serif">
-                          {fact.title}
-                        </h3>
-                        {fact.year && (
-                          <span className="inline-block bg-amber-900/10 text-amber-900 text-xs font-bold px-2 py-1 rounded mt-1">
-                            Year: {fact.year}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Main Content */}
-                    <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
-                      {fact.content}
-                    </p>
-
-                    {/* Key Points Grid */}
-                    <div className="pl-8 mb-4">
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-amber-900/80 font-serif text-sm">
-                        {fact.keyPoints.map((point, i) => (
-                          <li key={i}>{point}</li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Personalities Tags */}
-                    {fact.personalities && fact.personalities.length > 0 && (
-                      <div className="pl-8 flex flex-wrap gap-2 mb-4">
-                        {fact.personalities.map((p, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-                            👤 {p.name} <span className="opacity-50">| {p.role}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Significance Note */}
-                    <div className="pl-8 mt-4 bg-amber-50 p-3 rounded-r-lg border-l-4 border-amber-600">
-                      <p className="text-sm text-amber-900 font-medium italic">
-                        <span className="font-bold not-italic">💡 Why it matters:</span> {fact.significance}
-                      </p>
-                    </div>
-
-                  </div>
+                   <SamuraiScroll 
+                    fact={fact}
+                    index={index}
+                    width="max-w-4xl">
+                    </SamuraiScroll>
                 ))}
+              </div>
 
                 <div className="pt-6 text-center">
-                  <p className="text-amber-800/40 font-serif italic text-xs">
+                  <p className="text-amber-100/40 font-serif italic text-xs">
                     ~ Generated by The India Facts Portal ~
                   </p>
                 </div>
               </div>
             )}
 
-        </SamuraiScroll>
+       
 
       </div>
     </main>

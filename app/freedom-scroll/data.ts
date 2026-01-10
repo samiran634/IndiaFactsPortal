@@ -3,8 +3,6 @@ import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 // 1. Initialize the SDK
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
-// Use 'gemini-1.5-flash' for speed and cost-efficiency
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 export interface HistoricalFact {
@@ -24,11 +22,11 @@ export interface FreedomScrollData {
 }
 
 // Interface for Multimodal Input
-export interface MediaAnalysisRequest {
-  mediaData: string; // Base64 encoded string (no data:image/ prefix)
-  mimeType: string;  // e.g. 'image/jpeg', 'application/pdf'
-  userPrompt?: string; 
-}
+// export interface MediaAnalysisRequest {
+//   mediaData: string; // Base64 encoded string (no data:image/ prefix)
+//   mimeType: string;  // e.g. 'image/jpeg', 'application/pdf'
+//   userPrompt?: string; 
+// }
 
 // --- TOPIC DATA ---
 const historyTopics = {
@@ -81,7 +79,7 @@ export async function getRandomHistoryFacts(): Promise<FreedomScrollData> {
 
     // SDK Call
     const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const response =await result.response;
     const text = response.text();
 
     return parseGeminiResponse(text);
@@ -119,7 +117,7 @@ function parseGeminiResponse(text: string): FreedomScrollData {
 // ---------------------------------------------------------
 // FALLBACK DATA
 // ---------------------------------------------------------
-function getDefaultFacts(): HistoricalFact[] {
+export function getDefaultFacts(): HistoricalFact[] {
   return [
     {
       topic: "1857 Revolt",
@@ -130,6 +128,16 @@ function getDefaultFacts(): HistoricalFact[] {
       personalities: [{ name: "Rani Lakshmibai", role: "Queen of Jhansi" }],
       significance: "Crucial turning point in colonial history",
       year: 1857
+    },
+      {
+      topic: "Pulwama Attack",
+      era: "Modern day terror",
+      title: "Patriosim for country",
+      content: "February 14 is widely observed as a Black Day to honor the 40 Central Reserve Police Force (CRPF) personnel martyred in the 2019 Pulwama terror attack.",
+      keyPoints: ["Started May 10, 1857", "Mangal Pandey was a key figure", "Ended EIC rule"],
+      personalities: [{ name: "Rani Lakshmibai", role: "Queen of Jhansi" }],
+      significance: "Crucial turning point in colonial history",
+      year: 2019
     }
   ];
 }
