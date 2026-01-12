@@ -1,25 +1,7 @@
 import Link from "next/link";
-<<<<<<< HEAD
-import { getDefaultFacts, getRandomHistoryFacts } from "./data";
-import { ScrollStack } from "./ScrollStack";
-import { get } from "http";
-
-/*
-  what do i want here?
-   some faacts from data is arriving 
-   i shall add a new fied called relatedPlaces
-   which will be an array of strings
-   these will be place names related to the fact
-
-   in the scroll stack component
-   i will show these related places at the bottom of each scroll
-   now the main challenge is to add some bottom chick event which on click will load the map and show the places
-   and the remain functionality of the active map will be same as before
-=======
 import { getRandomHistoryFacts,getDefaultFacts } from "./data";
 import { SamuraiScroll } from "../utils/scroll";
->>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
-
+/*
 
 
    secondary goal is to connect the componenets in such a wahy which genarate a greate user experience
@@ -28,16 +10,10 @@ import { SamuraiScroll } from "../utils/scroll";
 
 */ 
 export default async function FreedomScrollPage() {
-<<<<<<< HEAD
-  //const   {facts , error}= await getRandomHistoryFacts() 
-  const facts=getDefaultFacts();
-  const error= null;
-=======
   //const { facts, error } = await getRandomHistoryFacts();
   const facts= getDefaultFacts();
   const error=null;
   
->>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
   return (
     <main className="min-h-screen bg-black">
       {/* Header */}
@@ -55,11 +31,8 @@ export default async function FreedomScrollPage() {
 
       {/* Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[80vh]">
-<<<<<<< HEAD
-=======
         
        
->>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
             
             {error && (
               <div className="text-red-800 font-bold p-4 border border-red-800/20 bg-red-50/50 rounded text-center">
@@ -69,24 +42,6 @@ export default async function FreedomScrollPage() {
             )}
 
             {!error && facts && (
-<<<<<<< HEAD
-              <div className="w-full text-center">
-                {/* WE USE THE STACK COMPONENT HERE INSTEAD OF MAPPING */}
-                <ScrollStack facts={facts} />
-                <div className="border-b-2 border-amber-900/20 pb-6 mb-8 inline-block">
-                  <h2 className="text-4xl font-bold text-amber-900 uppercase tracking-widest font-serif">
-                    Historical Chronicles
-                  </h2>
-                  <p className="text-amber-800/70 mt-2 font-serif italic">
-                    {facts[0]?.era || "Ancient Records"}
-                  </p>
-                </div>
-                
-           
-              </div>
-            )}
-
-=======
               <div className="flex justify-center text-left h-screen w-screen flex-col">
                 <div className="flex text-center border-b-2 border-amber-900/20 pb-2 mb-4 px-1.5">
                   <p className="text-amber-800/70 mt-0.5 font-serif italic mx-2">
@@ -113,7 +68,6 @@ export default async function FreedomScrollPage() {
 
        
 
->>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
       </div>
     </main>
   );
