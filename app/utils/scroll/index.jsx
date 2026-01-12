@@ -2,6 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+<<<<<<< HEAD
 export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
   
   const scrollVariants = {
@@ -10,6 +11,16 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
       opacity: 0 
     },
     visible: { 
+=======
+export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isVissible, setIsVisible]= useState(true);
+
+  // VARIANTS: This defines the animation states
+  const containerVariants = {
+    closed: { width: "0px", opacity: 0 },
+    open: { 
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
       width: "100%", 
       opacity: 1,
       transition: { 
@@ -45,10 +56,34 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
   }
 
   return (
+<<<<<<< HEAD
     <div className={`flex flex-col items-center justify-center py-4 ${width}`}>
       <div className="relative h-auto flex items-center justify-center w-full">
          
         {/* LEFT ROLLER */}
+=======
+    <>
+    
+    {isVissible &&
+    
+    <div className="flex flex-col items-center justify-center py-10 absolute">
+      
+      {/* TRIGGER BUTTON (For demo purposes) */}
+      {!isOpen && (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="mb-8 px-6 py-3 bg-red-800 text-amber-100 font-bold tracking-widest uppercase border-2 border-amber-600 hover:bg-red-900 transition-colors"
+        >
+          Open Decree
+        </button>
+      )}
+
+      {/* --- THE SCROLL CONTAINER --- */}
+      <div className={`relative h-100 flex items-center justify-center ${width}`}>
+        
+        {/* 1. LEFT HANDLE (Roller) */}
+        {/* Moves left as the center grows. We attach it to the left side of the relative container. */}
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
         <motion.div 
            className="absolute z-20 h-full w-8 bg-amber-900 rounded-full shadow-[4px_0_10px_rgba(0,0,0,0.5)] flex flex-col justify-between py-2 border-r border-amber-950"
            style={{ left: -14 }} 
@@ -59,11 +94,18 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
 
         {/* MIDDLE PAPER */}
         <motion.div
+<<<<<<< HEAD
           variants={scrollVariants}
           initial="hidden"
           animate="visible"
           exit="exit" // This triggers when the index changes in the parent!
           className="relative bg-[#f2eecb] shadow-2xl flex items-center justify-center overflow-hidden"
+=======
+          variants={containerVariants}
+          initial="closed"
+          animate={isOpen ? "open" : "closed"}
+          className="relative h-[90%] bg-[#f2eecb] overflow-auto shadow-2xl flex items-center justify-center"
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
           style={{
              backgroundImage: "url('https://www.transparenttextures.com/patterns/aged-paper.png')",
              borderTop: "2px solid #5c4033",
@@ -73,6 +115,11 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
         >
            <motion.div variants={contentVariants} className="p-8 text-center font-serif text-amber-900 w-full">
               <div key={index} className="relative pb-8 border-b border-dashed border-amber-900/30 last:border-0">
+<<<<<<< HEAD
+=======
+                    
+                    {/* Header: Year & Title */}
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
                     <div className="flex items-baseline gap-3 mb-3">
                       <span className="text-3xl font-serif font-bold text-red-900/80">
                         {index + 1}.
@@ -88,9 +135,19 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
                         )}
                       </div>
                     </div>
+<<<<<<< HEAD
                     <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
                       {fact.content}
                     </p>
+=======
+
+                    {/* Main Content */}
+                    <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
+                      {fact.content}
+                    </p>
+
+                    {/* Key Points Grid */}
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
                     <div className="pl-8 mb-4">
                       <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-amber-900/80 font-serif text-sm">
                         {fact.keyPoints.map((point, i) => (
@@ -98,15 +155,25 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
                         ))}
                       </ul>
                     </div>
+<<<<<<< HEAD
+=======
+
+                    {/* Personalities Tags */}
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
                     {fact.personalities && fact.personalities.length > 0 && (
                       <div className="pl-8 flex flex-wrap gap-2 mb-4">
                         {fact.personalities.map((p, i) => (
                           <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+<<<<<<< HEAD
                              {p.name} <span className="opacity-50">| {p.role}</span>
+=======
+                            👤 {p.name} <span className="opacity-50">| {p.role}</span>
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
                           </span>
                         ))}
                       </div>
                     )}
+<<<<<<< HEAD
                     {fact.places && fact.places.length > 0 && (
                       <div className="pl-8 mt-4">
                         <h4 className="text-amber-900 font-bold mb-2">Places:</h4>
@@ -125,6 +192,10 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
               >
                 Want to know about the places? CLICK HERE
               </button>
+=======
+
+                    {/* Significance Note */}
+>>>>>>> d5874f19ac695bca965c000ff74724fbc94021cb
                     <div className="pl-8 mt-4 bg-amber-50 p-3 rounded-r-lg border-l-4 border-amber-600">
                       <p className="text-sm text-amber-900 font-medium italic">
                         <span className="font-bold not-italic">💡 Why it matters:</span> {fact.significance}
@@ -145,6 +216,24 @@ export const SamuraiScroll = ({ width = "max-w-3xl", fact, index }) => {
         </motion.div>
 
       </div>
-    </div>
+        {isOpen && (
+        <button 
+          onClick={() => {
+            setIsOpen(false)
+            setTimeout(()=>{
+              setIsVisible(false)
+            },1000)
+          }}
+          className="mb-8 px-6 py-3 bg-red-800 text-amber-100 font-bold tracking-widest uppercase border-2 border-amber-600 hover:bg-red-900 transition-colors"
+        >
+          close Decree
+        </button>
+      )}
+    </div>}
+    
+    
+    
+    </>
+    
   );
 };
