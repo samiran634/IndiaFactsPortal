@@ -1,3 +1,5 @@
+import { execOnce } from 'next/dist/shared/lib/utils';
+
 declare module 'react-simple-maps' {
   import { ComponentType, ReactNode } from 'react';
 
@@ -23,6 +25,11 @@ declare module 'react-simple-maps' {
     onMove?: (event: any) => void;
     onMoveEnd?: (event: any) => void;
     children?: ReactNode;
+  }
+  export interface MarkerData {
+    name: string;
+    latitude: number;
+    longitude: number;
   }
 
   export interface GeographiesProps {
@@ -58,4 +65,5 @@ declare module 'react-simple-maps' {
   export const Geographies: ComponentType<GeographiesProps>;
   export const Geography: ComponentType<GeographyProps>;
   export const Marker: ComponentType<MarkerProps>;
+  export const MarkerData: ComponentType<MarkerData>;
 }

@@ -1,4 +1,5 @@
 {
   "/page": "app/page.js",
-  "/freedom-scroll/page": "app/freedom-scroll/page.js"
+  "/freedom-scroll/page": "app/freedom-scroll/page.js",
+  "/active-map/page": "app/active-map/page.js"
 }

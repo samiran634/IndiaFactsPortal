@@ -1,14 +1,33 @@
 import Link from "next/link";
-import { getRandomHistoryFacts } from "./data";
-import { SamuraiScroll } from "../utils/scroll";
+import { getDefaultFacts, getRandomHistoryFacts } from "./data";
+import { ScrollStack } from "./ScrollStack";
+import { get } from "http";
+
+/*
+  what do i want here?
+   some faacts from data is arriving 
+   i shall add a new fied called relatedPlaces
+   which will be an array of strings
+   these will be place names related to the fact
+
+   in the scroll stack component
+   i will show these related places at the bottom of each scroll
+   now the main challenge is to add some bottom chick event which on click will load the map and show the places
+   and the remain functionality of the active map will be same as before
 
 
+
+   secondary goal is to connect the componenets in such a wahy which genarate a greate user experience
+   so that the user feels immersed in the experience of learning history
+
+
+*/ 
 export default async function FreedomScrollPage() {
-  const { facts, error } = await getRandomHistoryFacts();
-
+  //const   {facts , error}= await getRandomHistoryFacts() 
+  const facts=getDefaultFacts();
+  const error= null;
   return (
     <main className="min-h-screen bg-black">
-      
       {/* Header */}
       <header className="flex justify-between bg-zinc-900/50 backdrop-blur-sm shadow-sm sticky top-0 z-20 border-b border-zinc-800">
          <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-2 font-medium p-4 transition-colors">
@@ -24,10 +43,7 @@ export default async function FreedomScrollPage() {
 
       {/* Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[80vh]">
-        
-        <SamuraiScroll width="max-w-4xl">
             
-            {/* 1. Error Handling */}
             {error && (
               <div className="text-red-800 font-bold p-4 border border-red-800/20 bg-red-50/50 rounded text-center">
                 <p>The archives are temporarily closed.</p>
@@ -35,10 +51,11 @@ export default async function FreedomScrollPage() {
               </div>
             )}
 
-            {/* 2. Success State */}
             {!error && facts && (
-              <div className="space-y-12 text-left">
-                <div className="text-center border-b-2 border-amber-900/20 pb-6 mb-8">
+              <div className="w-full text-center">
+                {/* WE USE THE STACK COMPONENT HERE INSTEAD OF MAPPING */}
+                <ScrollStack facts={facts} />
+                <div className="border-b-2 border-amber-900/20 pb-6 mb-8 inline-block">
                   <h2 className="text-4xl font-bold text-amber-900 uppercase tracking-widest font-serif">
                     Historical Chronicles
                   </h2>
@@ -46,71 +63,10 @@ export default async function FreedomScrollPage() {
                     {facts[0]?.era || "Ancient Records"}
                   </p>
                 </div>
-
-                {facts.map((fact, index) => (
-                  <div key={index} className="relative pb-8 border-b border-dashed border-amber-900/30 last:border-0">
-                    
-                    {/* Header: Year & Title */}
-                    <div className="flex items-baseline gap-3 mb-3">
-                      <span className="text-3xl font-serif font-bold text-red-900/80">
-                        {index + 1}.
-                      </span>
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-amber-950 font-serif">
-                          {fact.title}
-                        </h3>
-                        {fact.year && (
-                          <span className="inline-block bg-amber-900/10 text-amber-900 text-xs font-bold px-2 py-1 rounded mt-1">
-                            Year: {fact.year}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Main Content */}
-                    <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
-                      {fact.content}
-                    </p>
-
-                    {/* Key Points Grid */}
-                    <div className="pl-8 mb-4">
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-amber-900/80 font-serif text-sm">
-                        {fact.keyPoints.map((point, i) => (
-                          <li key={i}>{point}</li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Personalities Tags */}
-                    {fact.personalities && fact.personalities.length > 0 && (
-                      <div className="pl-8 flex flex-wrap gap-2 mb-4">
-                        {fact.personalities.map((p, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-                            👤 {p.name} <span className="opacity-50">| {p.role}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Significance Note */}
-                    <div className="pl-8 mt-4 bg-amber-50 p-3 rounded-r-lg border-l-4 border-amber-600">
-                      <p className="text-sm text-amber-900 font-medium italic">
-                        <span className="font-bold not-italic">💡 Why it matters:</span> {fact.significance}
-                      </p>
-                    </div>
-
-                  </div>
-                ))}
-
-                <div className="pt-6 text-center">
-                  <p className="text-amber-800/40 font-serif italic text-xs">
-                    ~ Generated by The India Facts Portal ~
-                  </p>
-                </div>
+                
+           
               </div>
             )}
-
-        </SamuraiScroll>
 
       </div>
     </main>

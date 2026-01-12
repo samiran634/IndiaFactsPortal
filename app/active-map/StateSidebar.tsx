@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Lightbulb, BookOpen, Newspaper, Loader2 } from "lucide-react";
@@ -13,6 +15,18 @@ interface StateSidebarProps {
     stateName: string | null;
     data: StateData | null;
 }
+/*
+    usage:
+    it is a sidebar ment to provide information about a selected state on the map.
+    it shows special facts, important concepts, and recent news headlines for the selected state.
+    it takes four props:
+    - isOpen: a boolean to control the visibility of the sidebar.
+    - onClose: a function to close the sidebar.
+    - stateName: the name of the selected state.
+    - data: an object containing facts and concepts about the state.
+
+
+*/
 
 const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName, data }) => {
     const [news, setNews] = useState<string[]>([]);
@@ -23,15 +37,17 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
             setLoadingNews(true);
             setNews([]);
 
-            fetch(`/api/state-news?state=${encodeURIComponent(stateName)}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.news && Array.isArray(data.news)) {
-                        setNews(data.news);
-                    }
-                })
-                .catch(err => console.error("Failed to fetch news:", err))
-                .finally(() => setLoadingNews(false));
+            // Simulate API call with sample data
+            setTimeout(() => {
+                setNews([
+                    `${stateName} achieves record agricultural output this season.`,
+                    `New tech park inaugurated in the capital region of ${stateName}.`,
+                    `tourism department launches new heritage walk initiative for visitors.`
+                ]);
+                setLoadingNews(false);
+            }, 800);
+
+            
         }
     }, [isOpen, stateName]);
 
@@ -54,7 +70,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-white shadow-2xl z-50 overflow-y-auto border-l border-gray-100"
+                        className="fixed top-0 right-0 h-full w-full md:w-112.5 bg-white shadow-2xl z-50 overflow-y-auto border-l border-gray-100"
                     >
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-8">
@@ -70,7 +86,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                             {data ? (
                                 <div className="space-y-8">
                                     {/* News Section (New) */}
-                                    <div className="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-xl p-5 border border-indigo-100">
+                                    <div className="bg-linear-to-br from-indigo-50 to-violet-50 rounded-xl p-5 border border-indigo-100">
                                         <div className="flex items-center gap-2 mb-4 text-indigo-700">
                                             <Newspaper className="w-5 h-5" />
                                             <h3 className="font-semibold text-lg">Today's Headlines</h3>

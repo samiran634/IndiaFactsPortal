@@ -1,38 +1,61 @@
-import Link from "next/link";
-import { ActiveMapContent } from "./index";
+'use client';
 
-export default function ActiveMapPage() {
+import { useState, useEffect } from 'react';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import MapChart from './MapComponent';
+const geoUrl = "/geojson/india.geojson";
+
+export default function HomePage() {
+  const [isLoading, setIsLoading] = useState(true);
+ 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false); // Hide skeleton after 3 seconds
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <main className="min-h-screen bg-linear-to-b from-blue-50 to-cyan-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-gray-600 hover:text-gray-900 flex items-center gap-2 font-medium">
-            ← Back to Home
-          </Link>
-          <h1 className="text-xl font-bold text-blue-600 flex items-center gap-2">
-            🗺️ Active Map
-          </h1>
-          <div className="w-24"></div>
+    <main className="p-4 w-full h-screen flex flex-col items-center justify-center bg-black">
+      {isLoading ? (
+     <div className="w-full max-w-4xl h-150 animate-pulse bg-gray-200 rounded-lg flex items-center justify-center">
+            
+            <ComposableMap
+              projection="geoAzimuthalEqualArea"
+              projectionConfig={{
+                rotate: [-10.0, -52.0, 0],
+                center: [-5, -3],
+                scale: 1100,
+              }}
+              width={800} 
+              height={600}
+            >
+                <Geographies geography={geoUrl}>
+                  {({ geographies }: { geographies: any[] }) =>
+                    geographies.map((geo: any) => (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill="#F53E3E"
+                        stroke="#9CA3AF"
+                        style={{
+                            default: { outline: "none" },
+                            hover: { outline: "none" },
+                            pressed: { outline: "none" },
+                        }}
+                      />
+                    ))
+                  }
+                </Geographies>
+            </ComposableMap>
         </div>
-      </header>
-
-      {/* Hero Section */}
-      <div className="bg-linear-to-r from-blue-600 to-cyan-500 text-white py-10 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Interactive India Map
-          </h2>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto">
-            Explore rivers, mountain passes, national parks, and defence bases with toggleable layers
-          </p>
+      ) : (
+        
+        <div className="w-full max-w-4xl animate-in fade-in duration-700">
+          <MapChart />
+        
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <ActiveMapContent />
-      </div>
+      )}
     </main>
   );
 }

@@ -58,6 +58,7 @@ export default function Home() {
     showCard: false,
     bgPosition: "left" 
   });
+  const [isSecletonVisible, setIsSkeletonVisible] = useState(true);
 
   // --- HEADER ANIMATION ---
   const { scrollY } = useScroll();
@@ -118,9 +119,10 @@ export default function Home() {
         accumulatedHeight += totalSectionHeight;
       }
     };
-
+     setTimeout(() => { setIsSkeletonVisible(false); }, 3000);
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () =>{ window.removeEventListener("scroll", handleScroll)
+    };
   }, []);
 
   const currentSection = SECTIONS[activeData.sectionIndex];
@@ -131,62 +133,90 @@ export default function Home() {
 
 
   return (
-    <motion.main className="bg-black min-h-screen w-screen relative no-scrollbar">
-      
-      <motion.div 
-        style={{ opacity: headerOpacity, y: headerY }}
-        className="fixed top-0 left-0 w-full flex justify-between px-4 z-20 pt-4 pointer-events-none"
-      >
-       <div className="flex flex-col justify-center">
-          <div className="text-white text-6xl font-bold">India Facts Portal</div>
-          <div className="flex text-2xl text-amber-50 mt-1.5">
-            Visit every day<br /> to be aware of what is going on.
-          </div>
-        </div>
-        <div className="flex align-baseline h-full pb-10 items-center">
-          <img src="/images/india.jpg" className="h-[80%] object-cover rounded-md" />
-        </div>
-      </motion.div>
-
-      <div className="sticky top-0 h-screen w-screen flex items-center justify-center overflow-hidden z-10">
-         
-         <motion.div
-           animate={{ 
-             x: activeData.bgPosition === "left" ? "-35%" : "0%",
-             scale: activeData.bgPosition === "left" ? 0.8 : 1
-           }}
-           transition={{ type: "spring", stiffness: 50, damping: 20 }}
-           className="relative h-[75%] w-[85%] flex items-center justify-center overflow-hidden border border-zinc-800 rounded-2xl shadow-2xl shadow-amber-900/40 bg-zinc-900"
-         >
-            <motion.img
-              key={`${currentSection.id}-${activeData.imgIndex}`} // Unique key forces re-render/fade
-              src={`/images/${currentSection.folder}/${currentSection.sympho+activeData.imgIndex}.${currentSection.format}`} 
-              alt="Fact"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              transition={{ duration: 0.5 }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-
-         </motion.div>
-            {activeData.showCard && (
-              <motion.div
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 500 }} 
-                transition={{ delay: 0.5, duration: 1 }} 
-                className="absolute z-100 w-80 shadow-2xl shadow-black/40 rounded-lg"
-              >
-                <Card title={currentSection.title}
-                      description={currentSection.description}
-                      link={currentSection.link}
+    <>
     
-                />
-              </motion.div>
-            )}
-      </div>
+    {isSecletonVisible === true ? (
+      <motion.div className="bg-black  h-screen w-screen flex items-center justify-center"
+       
+      >
+      <div className="flex flex-col items-center justify-center w-40 gap-2 animate-pulse">
+  
+  <div className="flex w-full justify-between">
+     <div className="h-12 w-12 bg-gray-300 rounded-full"></div>
+     <div className="h-12 w-12 bg-gray-300 rounded-full"></div>
+  </div>
 
-      <div style={{ height: `${totalPageHeight + 1000}px` }}></div>
+  <div className="
+      w-3/4          /* Width of the mouth relative to container */
+      h-6            /* Height determines how 'deep' the curve is */
+      border-b-4     /* Thickness of the smile */
+      border-gray-300 
+      rounded-b-full /* This creates the perfect U-shape arc */
+  "></div>
 
-    </motion.main>
+</div>
+      </motion.div>
+    ): 
+      <motion.main className="bg-black min-h-screen w-screen relative no-scrollbar">
+        
+        <motion.div 
+          style={{ opacity: headerOpacity, y: headerY }}
+          className="fixed top-0 left-0 w-full flex justify-between px-4 z-20 pt-4 pointer-events-none"
+        >
+        <div className="flex flex-col justify-center">
+            <div className="text-white text-6xl font-bold">India Facts Portal</div>
+            <div className="flex text-2xl text-amber-50 mt-1.5">
+              Visit every day<br /> to be aware of what is going on.
+            </div>
+          </div>
+          <div className="flex align-baseline h-screen pb-10 items-center justify-center">
+            <img src="/images/india.jpg" className="h-[80%] flex justify-center object-cover rounded-md" />
+          </div>
+        </motion.div>
+
+        <div className="sticky top-0 h-screen w-screen flex items-center justify-center overflow-hidden z-10">
+          
+          <motion.div
+            animate={{ 
+              x: activeData.bgPosition === "left" ? "-35%" : "0%",
+              scale: activeData.bgPosition === "left" ? 0.8 : 1
+            }}
+            transition={{ type: "spring", stiffness: 50, damping: 20 }}
+            className="relative h-[75%] w-[85%] flex items-center justify-center overflow-hidden border border-zinc-800 rounded-2xl shadow-2xl shadow-amber-900/40 bg-zinc-900"
+          >
+              <motion.img
+                key={`${currentSection.id}-${activeData.imgIndex}`} // Unique key forces re-render/fade
+                src={`/images/${currentSection.folder}/${currentSection.sympho+activeData.imgIndex}.${currentSection.format}`} 
+                alt="Fact"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6 }}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+
+          </motion.div>
+              {activeData.showCard && (
+                <motion.div
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 500 }} 
+                  transition={{ delay: 0.5, duration: 1 }} 
+                  className="absolute z-100 w-80 shadow-2xl shadow-black/40 rounded-lg"
+                >
+                  <Card title={currentSection.title}
+                        description={currentSection.description}
+                        link={currentSection.link}
+      
+                  />
+                </motion.div>
+              )}
+        </div>
+
+        <div style={{ height: `${totalPageHeight + 1000}px` }}></div>
+
+      </motion.main>
+    }
+    
+    
+    </>
   );
 }
