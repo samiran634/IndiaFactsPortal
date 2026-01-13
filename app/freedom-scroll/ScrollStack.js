@@ -46,6 +46,7 @@ export const ScrollStack = ({ facts  }) => {
                  onClick={handleReset}
                  className="px-6 py-2 border border-amber-700 text-amber-600 rounded hover:bg-amber-900/20"
               >
+                That's all for now.<br/>
                 Read Again
               </button>
             </motion.div>
@@ -59,7 +60,7 @@ export const ScrollStack = ({ facts  }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleNext}
-          className="mt-8 px-8 py-3 bg-red-900/80 hover:bg-red-800 text-amber-50 border border-amber-600/50 
+          className="mt-2 px-8 py-3 bg-red-900/80 hover:bg-red-800 text-amber-50 border border-amber-600/50 
                      rounded-full font-serif text-lg tracking-widest shadow-[0_0_20px_rgba(180,83,9,0.2)]
                      backdrop-blur-sm z-30 transition-colors"
         >

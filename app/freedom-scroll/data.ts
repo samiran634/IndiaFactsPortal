@@ -3,8 +3,6 @@ import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 // 1. Initialize the SDK
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
-// Use 'gemini-1.5-flash' for speed and cost-efficiency
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 export interface HistoricalFact {
@@ -25,11 +23,11 @@ export interface FreedomScrollData {
 }
 
 // Interface for Multimodal Input
-export interface MediaAnalysisRequest {
-  mediaData: string; // Base64 encoded string (no data:image/ prefix)
-  mimeType: string;  // e.g. 'image/jpeg', 'application/pdf'
-  userPrompt?: string; 
-}
+// export interface MediaAnalysisRequest {
+//   mediaData: string; // Base64 encoded string (no data:image/ prefix)
+//   mimeType: string;  // e.g. 'image/jpeg', 'application/pdf'
+//   userPrompt?: string; 
+// }
 
 // --- TOPIC DATA ---
 const historyTopics = {
@@ -82,7 +80,7 @@ export async function getRandomHistoryFacts(): Promise<FreedomScrollData> {
 
     // SDK Call
     const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const response =await result.response;
     const text = response.text();
 
     return parseGeminiResponse(text);
