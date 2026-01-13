@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "app/utils/card/index.jsx", "app/page.jsx", "app/freedom-scroll/page.tsx", "app/active-map/MapComponent.tsx"  ],
+, "app/utils/card/index.jsx", "app/page.jsx", "app/freedom-scroll/page.tsx", "app/active-map/MapComponent.tsx", "app/utils/BigMinus/index.jsx"  ],
   "exclude": [
     "node_modules"
   ]

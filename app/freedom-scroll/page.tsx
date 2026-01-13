@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getDefaultFacts, getRandomHistoryFacts } from "./data";
 import { ScrollStack } from "./ScrollStack";
-import { get } from "http";
 
 /*
   what do i want here?

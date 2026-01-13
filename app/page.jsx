@@ -1,8 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform,AnimatePresence } from "framer-motion";
 import { Card } from "./utils/card";
+import LeftScrollDown from "./utils/scrollDown/left";
+import RightScrollUp from "./utils/scrollUp/right";
+import RightScrollDown from "./utils/scrollDown/right";
+import LeftScrollUp from "./utils/scrollUp/left";
+/*
+  when the user starts to scroll downt at some certain distance appeart left and right scroll arroe accorgint to their direction will appear on the sides
+  they will disappear instantly after inactivity
+
+*/
  
 /*
   the json data will contain 
@@ -59,7 +68,8 @@ export default function Home() {
     bgPosition: "left" 
   });
   const [isSecletonVisible, setIsSkeletonVisible] = useState(true);
-
+  const [scrollDir, setScrollDir] = useState(null); // "up" or "down"
+  const [isScrolling, setIsScrolling] = useState(false);
   // --- HEADER ANIMATION ---
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -77,8 +87,31 @@ export default function Home() {
   */
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let timeoutId = null; // Timer for inactivity
     const handleScroll = () => {
       const scrollY = window.scrollY;
+      if (Math.abs(scrollY - lastScrollY) > 5) {
+        if (scrollY > lastScrollY) {
+          setScrollDir("down");
+        } else {
+          setScrollDir("up");
+        }
+      }
+      lastScrollY =   scrollY;
+      if (scrollY > 100) { // Only show if scrolled down at least 100px
+        setIsScrolling(true);
+      } else {
+        setIsScrolling(false); // Hide immediately if at very top
+      }
+
+      // Clear existing timer
+      if (timeoutId) clearTimeout(timeoutId);
+
+      // Set new timer to hide arrows after 800ms of inactivity
+      timeoutId = setTimeout(() => {
+        setIsScrolling(false);
+      }, 800);
       let accumulatedHeight = 0;
 
       for (let i = 0; i < SECTIONS.length; i++) {
@@ -93,8 +126,6 @@ export default function Home() {
         if (scrollY >= sectionStart && scrollY <= sectionEnd) {
           const relativeScroll = scrollY - sectionStart;
           if (relativeScroll < imagePhaseHeight) {
-             // --- IMAGE PHASE ---
-             // Calculate countdown index (e.g. 12 -> 1)
              const rawIndex = Math.floor(relativeScroll / SCROLL_PER_IMG);
              const currentCount = section.count - rawIndex;
              const isHeadVisible = i===0 && relativeScroll <=300;
@@ -158,7 +189,42 @@ export default function Home() {
       </motion.div>
     ): 
       <motion.main className="bg-black min-h-screen w-screen relative no-scrollbar">
-        
+        <AnimatePresence>
+            {isScrolling && scrollDir === "down" && (
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="fixed left-4 top-1/2 z-50 pointer-events-none"
+                >
+                  <LeftScrollDown />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="fixed right-4 top-1/2 z-50 pointer-events-none"
+                >
+                  <RightScrollDown />
+                </motion.div>
+              </>
+            )}
+
+            {isScrolling && scrollDir === "up" && (
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="fixed left-4 top-1/2 z-50 pointer-events-none"
+                >
+                  <LeftScrollUp />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="fixed right-4 top-1/2 z-50 pointer-events-none"
+                >
+                  <RightScrollUp />
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+          {/* ----------------------------- */}
         <motion.div 
           style={{ opacity: headerOpacity, y: headerY }}
           className="fixed top-0 left-0 w-full flex justify-between px-4 z-20 pt-4 pointer-events-none"
