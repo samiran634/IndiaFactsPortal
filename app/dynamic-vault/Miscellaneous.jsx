@@ -15,8 +15,8 @@ const MiscellaneousMainContent = () => {
     const items = Miscellaneous_data.slice(0, 9);
 
     return (
-        <div className="w-full h-full min-h-[600px] p-8 overflow-y-auto custom-scrollbar">
-            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-cyan-200 to-blue-500 mb-8 text-center sticky top-0 z-50 backdrop-blur-md py-4">
+        <div className="w-full h-full min-h-150 p-8 overflow-y-auto custom-scrollbar">
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-linear-to-tr from-cyan-200 to-blue-500 mb-8 text-center sticky top-0 z-50 backdrop-blur-md py-4">
                 Miscellaneous Updates
             </h1>
             
@@ -33,7 +33,7 @@ const MiscellaneousMainContent = () => {
                                     alt={item.headding[0]}
                                     className="h-full w-full object-cover opacity-40 transition-transform duration-500 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+                                <div className="absolute inset-0 bg-linear-to-t from-black/90 to-transparent" />
                             </div>
                         }
                         Icon={getIcon(index)}

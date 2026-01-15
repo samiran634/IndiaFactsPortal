@@ -42,13 +42,13 @@ const PolityMainContent = () => {
     };
 
     return (
-        <div className="w-full h-full min-h-[600px] flex flex-col items-center justify-center relative perspective-1000 overflow-hidden">
+        <div className="w-full h-full min-h-150 flex flex-col items-center justify-center relative perspective-1000 overflow-hidden">
             
-            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-amber-200 to-yellow-500 mb-12 z-10">
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-linear-to-tr from-amber-200 to-yellow-500 mb-12 z-10">
                 Polity & Economy
             </h1>
 
-            <div className="relative w-full max-w-4xl h-[450px] flex items-center justify-center">
+            <div className="relative w-full max-w-4xl h-112.5 flex items-center justify-center">
                 {/* Left Card */}
                 <Card 
                     {...getCardProps(-1)} 
