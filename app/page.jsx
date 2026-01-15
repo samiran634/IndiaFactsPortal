@@ -24,16 +24,17 @@ import LeftScrollUp from "./utils/scrollUp/left";
 
 */
 const SECTIONS = [
-  {
-    id: "freedom",
-    title: "Freedom Scroll",
-    folder: "till_1889", // Folder name in public/images
-    count: 12,           // Number of images
-    description: "Welcome to the Freedom Scroll phase. Discover historical facts leading up to 1889.",
-    sympho: "today",  // Image prefix
-    format: "jpg",  // Image format
-    link: "/freedom-scroll", // Link for the card
+   {
+    id: "vault",
+    title: "Dynamic Vault",
+    folder: "current",
+    count: 6,
+    description: "Current facts are displayed here daily. You must check in every day!",
+    sympho: "photo",
+    format: "png",
+    link: "/dynamic-vault",
   },
+
   {
     id: "map",
     title: "Active Map",
@@ -44,16 +45,17 @@ const SECTIONS = [
     format: "jpeg",
     link: "/active-map",
   },
-  {
-    id: "vault",
-    title: "Dynamic Vault",
-    folder: "current",
-    count: 5,
-    description: "Current facts are displayed here daily. You must check in every day!",
-    sympho: "photo",
-    format: "png",
-    link: "/dynamic-vault",
-  }
+    {
+    id: "freedom",
+    title: "Freedom Scroll",
+    folder: "till_1889", // Folder name in public/images
+    count: 11,           // Number of images
+    description: "Welcome to the Freedom Scroll phase. Discover historical facts leading up to 1889.",
+    sympho: "today",  // Image prefix
+    format: "jpg",  // Image format
+    link: "/freedom-scroll", // Link for the card
+  },
+ 
 ];
 
 const SCROLL_PER_IMG = 200;
@@ -63,7 +65,7 @@ export default function Home() {
   // --- STATE ---
   const [activeData, setActiveData] = useState({
     sectionIndex: 0,
-    imgIndex: 12,
+    imgIndex: 6,
     showCard: false,
     bgPosition: "left" 
   });

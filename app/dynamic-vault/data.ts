@@ -32,6 +32,7 @@ export async function fetchGist(): Promise<Article[]> {
     if (data.articles) {
       // TODO: Pass data.articles to Gemini for gist generation
       console.log('Headlines fetched for Gemini gist:', data.articles.length);
+      console.log(data);
       return data.articles;
     }
     return [];
@@ -55,6 +56,7 @@ export async function fetchHeadlines(): Promise<Article[]> {
     
     if (data.articles) {
       console.log('Everything data fetched:', data.articles.length);
+      console.log(data);
       return data.articles;
     }
     return [];
