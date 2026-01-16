@@ -1,12 +1,31 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, useScroll, useTransform,AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Card } from "./utils/card";
 import LeftScrollDown from "./utils/scrollDown/left";
 import RightScrollUp from "./utils/scrollUp/right";
 import RightScrollDown from "./utils/scrollDown/right";
 import LeftScrollUp from "./utils/scrollUp/left";
+
+// Hook to detect mobile (20:8 ratio screens)
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      const ratio = window.innerWidth / window.innerHeight;
+      // 20:8 = 2.5, but we check for portrait/narrow screens
+      setIsMobile(window.innerWidth < 768 || ratio < 1);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  
+  return isMobile;
+};
 /*
   when the user starts to scroll downt at some certain distance appeart left and right scroll arroe accorgint to their direction will appear on the sides
   they will disappear instantly after inactivity
@@ -42,7 +61,7 @@ const SECTIONS = [
     count: 6,
     description: "Engaging the Active Map coordinates. Explore geographical facts interactively.",
     sympho: "download",
-    format: "jpeg",
+    format: "png",
     link: "/active-map",
   },
     {
@@ -58,8 +77,8 @@ const SECTIONS = [
  
 ];
 
-const SCROLL_PER_IMG = 200;
-const CARD_BUFFER = 1400; 
+const SCROLL_PER_IMG = 100;
+const CARD_BUFFER = 1200; 
 
 export default function Home() {
   // --- STATE ---
@@ -72,6 +91,8 @@ export default function Home() {
   const [isSecletonVisible, setIsSkeletonVisible] = useState(true);
   const [scrollDir, setScrollDir] = useState(null); // "up" or "down"
   const [isScrolling, setIsScrolling] = useState(false);
+  const isMobile = useIsMobile();
+  
   // --- HEADER ANIMATION ---
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -192,7 +213,7 @@ export default function Home() {
     ): 
       <motion.main className="bg-black min-h-screen w-screen relative no-scrollbar">
         <AnimatePresence>
-            {isScrolling && scrollDir === "down" && (
+            {!isMobile && isScrolling && scrollDir === "down" && (
               <>
                 <motion.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -209,7 +230,7 @@ export default function Home() {
               </>
             )}
 
-            {isScrolling && scrollDir === "up" && (
+            {!isMobile && isScrolling && scrollDir === "up" && (
               <>
                 <motion.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -229,15 +250,15 @@ export default function Home() {
           {/* ----------------------------- */}
         <motion.div 
           style={{ opacity: headerOpacity, y: headerY }}
-          className="fixed top-0 left-0 w-full flex justify-between px-4 z-20 pt-4 pointer-events-none"
+          className="fixed top-0 left-0 w-full flex flex-col md:flex-row justify-between px-4 z-20 pt-4 pointer-events-none"
         >
         <div className="flex flex-col justify-center">
-            <div className="text-white text-6xl font-bold">India Facts Portal</div>
-            <div className="flex text-2xl text-amber-50 mt-1.5">
+            <div className="text-white text-3xl md:text-6xl font-bold">India Facts Portal</div>
+            <div className="flex text-lg md:text-2xl text-amber-50 mt-1.5">
               Visit every day<br /> to be aware of what is going on.
             </div>
           </div>
-          <div className="flex align-baseline h-screen pb-10 items-center justify-center">
+          <div className="hidden md:flex align-baseline h-screen pb-10 items-center justify-center">
             <img src="/images/india.jpg" className="h-[80%] flex justify-center object-cover rounded-md" />
           </div>
         </motion.div>
@@ -245,12 +266,17 @@ export default function Home() {
         <div className="sticky top-0 h-screen w-screen flex items-center justify-center overflow-hidden z-10">
           
           <motion.div
-            animate={{ 
+            animate={isMobile ? {
+              // Mobile: Don't move, just change opacity based on card visibility
+              opacity: activeData.showCard ? 0.4 : 1,
+              scale: 1
+            } : { 
+              // Desktop: Original behavior with position movement
               x: activeData.bgPosition === "left" ? "-35%" : "0%",
               scale: activeData.bgPosition === "left" ? 0.8 : 1
             }}
             transition={{ type: "spring", stiffness: 50, damping: 20 }}
-            className="relative h-[75%] w-[85%] flex items-center justify-center overflow-hidden border border-zinc-800 rounded-2xl shadow-2xl shadow-amber-900/40 bg-zinc-900"
+            className="relative h-[85%] md:h-[75%] w-[95%] md:w-[85%] flex items-center justify-center overflow-hidden border border-zinc-800 rounded-2xl shadow-2xl shadow-amber-900/40 bg-zinc-900"
           >
               <motion.img
                 key={`${currentSection.id}-${activeData.imgIndex}`} // Unique key forces re-render/fade
@@ -265,10 +291,14 @@ export default function Home() {
           </motion.div>
               {activeData.showCard && (
                 <motion.div
-                  initial={{ opacity: 0, x: 100 }}
-                  animate={{ opacity: 1, x: 500 }} 
+                  initial={{ opacity: 0, x: isMobile ? 0 : 100, y: isMobile ? 100 : 0 }}
+                  animate={{ opacity: 1, x: isMobile ? 0 : 500, y: isMobile ? 0 : 0 }} 
                   transition={{ delay: 0.5, duration: 1 }} 
-                  className="absolute z-100 w-80 shadow-2xl shadow-black/40 rounded-lg"
+                  className={`absolute z-100 shadow-2xl shadow-black/40 rounded-lg ${
+                    isMobile 
+                      ? "w-[90%] bottom-8" 
+                      : "w-80"
+                  }`}
                 >
                   <Card title={currentSection.title}
                         description={currentSection.description}

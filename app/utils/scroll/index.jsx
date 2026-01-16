@@ -1,20 +1,29 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
-export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
+export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isVissible, setIsVisible]= useState(true);
+  const [isVissible, setIsVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Check for mobile screen
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    
     // Open the scroll after a short delay to trigger the animation
     const openTimeout = setTimeout(() => {
       setIsOpen(true);
-    }, 100); // Delay before opening
+    }, 100);
 
     return () => {
       clearTimeout(openTimeout);
+      window.removeEventListener("resize", checkMobile);
     };
   }, [index]);
 
@@ -61,18 +70,18 @@ export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
     
     {isVissible &&
     
-    <div className="flex flex-col items-center justify-center py-10 absolute">
+    <div className="flex flex-col items-center justify-center py-4 md:py-10 absolute w-full px-2 md:px-0">
       
    
 
       {/* --- THE SCROLL CONTAINER --- */}
-      <div className={`relative h-100 flex items-center justify-center ${width}`}>
+      <div className={`relative h-auto md:h-100 flex items-center justify-center w-full ${isMobile ? 'max-w-[95vw]' : width}`}>
         <motion.div 
-           className="absolute z-20 h-full w-8 bg-amber-900 rounded-full shadow-[4px_0_10px_rgba(0,0,0,0.5)] flex flex-col justify-between py-2 border-r border-amber-950"
-           style={{ left: -14 }} 
+           className="absolute z-20 h-full w-4 md:w-8 bg-amber-900 rounded-full shadow-[4px_0_10px_rgba(0,0,0,0.5)] flex flex-col justify-between py-2 border-r border-amber-950"
+           style={{ left: isMobile ? -8 : -14 }} 
         >
-           <div className="h-4 w-full bg-yellow-600 rounded-sm"></div>
-           <div className="h-4 w-full bg-yellow-600 rounded-sm"></div>
+           <div className="h-2 md:h-4 w-full bg-yellow-600 rounded-sm"></div>
+           <div className="h-2 md:h-4 w-full bg-yellow-600 rounded-sm"></div>
         </motion.div>
 
         {/* MIDDLE PAPER */}
@@ -85,19 +94,19 @@ export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
              backgroundImage: "url('https://www.transparenttextures.com/patterns/aged-paper.png')",
              borderTop: "2px solid #5c4033",
              borderBottom: "2px solid #5c4033",
-             minHeight: "300px" 
+             minHeight: isMobile ? "250px" : "300px" 
           }}
         >
-           <motion.div variants={contentVariants} className="p-8 text-center font-serif text-amber-900 w-full">
-              <div key={index} className="relative pb-8 border-b border-dashed border-amber-900/30 last:border-0">
+           <motion.div variants={contentVariants} className="p-4 md:p-8 text-center font-serif text-amber-900 w-full">
+              <div key={index} className="relative pb-4 md:pb-8 border-b border-dashed border-amber-900/30 last:border-0">
                     
                     {/* Header: Year & Title */}
-                    <div className="flex items-baseline gap-3 mb-3">
-                      <span className="text-3xl font-serif font-bold text-red-900/80">
+                    <div className="flex flex-col md:flex-row items-start md:items-baseline gap-2 md:gap-3 mb-3">
+                      <span className="text-xl md:text-3xl font-serif font-bold text-red-900/80">
                         {index + 1}.
                       </span>
                       <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-amber-950 font-serif">
+                        <h3 className="text-lg md:text-2xl font-bold text-amber-950 font-serif text-left">
                           {fact.title}
                         </h3>
                         {fact.year && (
@@ -110,13 +119,13 @@ export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
                     </div>
 
                     {/* Main Content */}
-                    <p className="text-amber-950/90 text-lg leading-relaxed font-serif mb-4 pl-8">
+                    <p className="text-amber-950/90 text-sm md:text-lg leading-relaxed font-serif mb-4 pl-0 md:pl-8 text-left">
                       {fact.content}
                     </p>
 
                     {/* Key Points Grid */}
-                    <div className="pl-8 mb-4">
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc list-inside text-amber-900/80 font-serif text-sm">
+                    <div className="pl-0 md:pl-8 mb-4">
+                      <ul className="grid grid-cols-1 gap-2 list-disc list-inside text-amber-900/80 font-serif text-xs md:text-sm text-left">
                         {fact.keyPoints.map((point, i) => (
                           <li key={i}>{point}</li>
                         ))}
@@ -125,18 +134,18 @@ export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
 
                     {/* Personalities Tags */}
                     {fact.personalities && fact.personalities.length > 0 && (
-                      <div className="pl-8 flex flex-wrap gap-2 mb-4">
+                      <div className="pl-0 md:pl-8 flex flex-wrap gap-1 md:gap-2 mb-4">
                         {fact.personalities.map((p, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-                            👤 {p.name} <span className="opacity-50">| {p.role}</span>
+                          <span key={i} className="inline-flex items-center gap-1 px-2 md:px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                            👤 {p.name} <span className="opacity-50 hidden md:inline">| {p.role}</span>
                           </span>
                         ))}
                       </div>
                     )}
                     {fact.places && fact.places.length > 0 && (
-                      <div className="pl-8 flex flex-wrap gap-2 mb-4 cursor-pointer" onClick={sendRequestToActiveMap(fact.places)}>
+                      <div className="pl-0 md:pl-8 flex flex-wrap gap-1 md:gap-2 mb-4 cursor-pointer" onClick={sendRequestToActiveMap(fact.places)}>
                         {fact.places.map((place, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                          <span key={i} className="inline-flex items-center gap-1 px-2 md:px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                             📍 {place.name}
                           </span>
                         ))}
@@ -144,8 +153,8 @@ export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
                     )}
 
                     {/* Significance Note */}
-                    <div className="pl-8 mt-4 bg-amber-50 p-3 rounded-r-lg border-l-4 border-amber-600">
-                      <p className="text-sm text-amber-900 font-medium italic">
+                    <div className="pl-0 md:pl-8 mt-4 bg-amber-50 p-2 md:p-3 rounded-r-lg border-l-4 border-amber-600">
+                      <p className="text-xs md:text-sm text-amber-900 font-medium italic text-left">
                         <span className="font-bold not-italic">💡 Why it matters:</span> {fact.significance}
                       </p>
                     </div>
@@ -156,11 +165,11 @@ export const SamuraiScroll = ({ fact,index, width = "max-w-3xl" }) => {
 
         {/* RIGHT ROLLER */}
         <motion.div 
-           className="absolute z-20 h-full w-8 bg-amber-900 rounded-full shadow-[-4px_0_10px_rgba(0,0,0,0.5)] flex flex-col justify-between py-2 border-l border-amber-950"
-           style={{ right: -14 }} 
+           className="absolute z-20 h-full w-4 md:w-8 bg-amber-900 rounded-full shadow-[-4px_0_10px_rgba(0,0,0,0.5)] flex flex-col justify-between py-2 border-l border-amber-950"
+           style={{ right: isMobile ? -8 : -14 }} 
         >
-            <div className="h-4 w-full bg-yellow-600 rounded-sm"></div>
-            <div className="h-4 w-full bg-yellow-600 rounded-sm"></div>
+            <div className="h-2 md:h-4 w-full bg-yellow-600 rounded-sm"></div>
+            <div className="h-2 md:h-4 w-full bg-yellow-600 rounded-sm"></div>
         </motion.div>
 
       </div>

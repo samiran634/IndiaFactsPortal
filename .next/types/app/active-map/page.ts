@@ -1,4 +1,4 @@
-// File: /home/sam/dev/github/cds_study/app/active-map/page.tsx
+// File: E:\GitHub\cds_study\app\active-map\page.tsx
 import * as entry from '../../../../app/active-map/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

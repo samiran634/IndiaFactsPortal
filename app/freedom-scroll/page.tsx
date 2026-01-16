@@ -29,20 +29,20 @@ export default async function FreedomScrollPage() {
   return (
     <main className="min-h-screen bg-black">
       {/* Header */}
-      <header className="flex justify-between bg-zinc-900/50 backdrop-blur-sm shadow-sm sticky top-0 z-20 border-b border-zinc-800">
-         <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-0.5 font-medium p-4 transition-colors">
+      <header className="flex flex-col md:flex-row justify-between bg-zinc-900/50 backdrop-blur-sm shadow-sm sticky top-0 z-20 border-b border-zinc-800">
+         <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-0.5 font-medium p-2 md:p-4 transition-colors text-sm md:text-base">
             ← Back to Home
           </Link>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-100 flex items-center gap-2 justify-center">
-            <span className="text-4xl">📜</span> Freedom Scroll
+        <div className="max-w-7xl mx-auto px-4 py-2 md:py-4 flex items-center justify-between">
+          <h1 className="text-xl md:text-3xl font-bold text-gray-100 flex items-center gap-2 justify-center">
+            <span className="text-2xl md:text-4xl">📜</span> Freedom Scroll
           </h1>
         </div>
-        <div className="w-24"></div> 
+        <div className="hidden md:block w-24"></div> 
       </header>
 
       {/* Content Area */}
-      <div className="max-w-7xl mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[80vh]">     
+      <div className="max-w-7xl mx-auto px-2 md:px-4 py-6 md:py-12 flex flex-col items-center justify-center min-h-[80vh]">     
             {error && (
               <div className="text-red-800 font-bold p-4 border border-red-800/20 bg-red-50/50 rounded text-center">
                 <p>The archives are temporarily closed.</p>
@@ -53,11 +53,11 @@ export default async function FreedomScrollPage() {
             {!error && facts && (
               <div className="flex justify-center text-left h-screen w-screen flex-col">
                 <div className="flex text-center border-b-2 border-amber-900/20 pb-2 mb-4 px-1.5">
-                  <p className="text-amber-800/70 font-serif italic mx-2">
+                  <p className="text-amber-800/70 font-serif italic mx-2 text-sm md:text-base">
                     era={facts[0]?.era || "Ancient Records"}
                   </p>
                 </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center px-2 md:px-0">
                
                    <ScrollStack facts={facts}></ScrollStack>
                  

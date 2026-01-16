@@ -1,10 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/news/route": "app/api/news/route.js",
-  "/api/state-news/route": "app/api/state-news/route.js",
-  "/freedom-scroll/page": "app/freedom-scroll/page.js",
   "/page": "app/page.js",
-  "/bookmarks/page": "app/bookmarks/page.js",
   "/active-map/page": "app/active-map/page.js",
   "/dynamic-vault/page": "app/dynamic-vault/page.js"
 }

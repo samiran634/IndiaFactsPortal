@@ -29,7 +29,7 @@ const RadialComponent: React.FC<RadialComponentProps> = ({ selected, setSelected
   const handleSelect = (id: number) => {
     setSelected(id);
     setStage('focus');
-    setTimeout(() => setStage('minimized'), 3000);
+    setTimeout(() => setStage('minimized'), 1500);
     setIsButtonVisible(true);
   };
 
