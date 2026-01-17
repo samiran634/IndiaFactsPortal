@@ -77,8 +77,8 @@ const SECTIONS = [
  
 ];
 
-const SCROLL_PER_IMG = 100;
-const CARD_BUFFER = 1200; 
+const SCROLL_PER_IMG = 0; // Trimmed as requested
+const CARD_BUFFER = 800; // Reduced height 
 
 export default function Home() {
   // --- STATE ---
@@ -109,11 +109,56 @@ export default function Home() {
 
   */
 
+  // --- ANIMATION EFFECT ---
   useEffect(() => {
+    let intervalId = null;
+    if (activeData.isPlaying) {
+      intervalId = setInterval(() => {
+        setActiveData(prev => {
+          if (prev.imgIndex <= 1) {
+            clearInterval(intervalId);
+            return { ...prev, imgIndex: 1, showCard: true, bgPosition: "left", isPlaying: false };
+          }
+          return { ...prev, imgIndex: prev.imgIndex - 1, bgPosition: "center" };
+        });
+      }, 200);
+    }
+    return () => { if (intervalId) clearInterval(intervalId); };
+  }, [activeData.isPlaying, activeData.sectionIndex]);
+
+  useEffect(() => {
+    // --- PRELOAD IMAGES ---
+    SECTIONS.forEach((section) => {
+      for (let i = 1; i <= section.count; i++) {
+        const img = new Image();
+        img.src = `/images/${section.folder}/${section.sympho}${i}.${section.format}`;
+      }
+    });
+
     let lastScrollY = window.scrollY;
-    let timeoutId = null; // Timer for inactivity
+    let timeoutId = null;
     const handleScroll = () => {
       const scrollY = window.scrollY;
+      
+      // Force reset at the very top (fix for "photo6.png should be displayed")
+      if (scrollY < 50) {
+        const isAtVeryTop = scrollY <= 10;
+        setActiveData(prev => {
+           const desiredPos = isAtVeryTop ? "left" : "center";
+           
+           if (prev.imgIndex !== SECTIONS[0].count || prev.showCard || prev.bgPosition !== desiredPos) {
+               return {
+                   sectionIndex: 0,
+                   imgIndex: SECTIONS[0].count, 
+                   showCard: false,
+                   bgPosition: desiredPos,
+                   isPlaying: false
+               };
+           }
+           return prev;
+        });
+      }
+
       if (Math.abs(scrollY - lastScrollY) > 5) {
         if (scrollY > lastScrollY) {
           setScrollDir("down");
@@ -121,22 +166,20 @@ export default function Home() {
           setScrollDir("up");
         }
       }
-      lastScrollY =   scrollY;
-      if (scrollY > 100) { // Only show if scrolled down at least 100px
+      lastScrollY = scrollY;
+      
+      if (scrollY > 100) { 
         setIsScrolling(true);
       } else {
-        setIsScrolling(false); // Hide immediately if at very top
+        setIsScrolling(false); 
       }
 
-      // Clear existing timer
       if (timeoutId) clearTimeout(timeoutId);
-
-      // Set new timer to hide arrows after 800ms of inactivity
       timeoutId = setTimeout(() => {
         setIsScrolling(false);
       }, 800);
-      let accumulatedHeight = 0;
 
+      let accumulatedHeight = 0;
       for (let i = 0; i < SECTIONS.length; i++) {
         const section = SECTIONS[i];
         
@@ -146,37 +189,37 @@ export default function Home() {
         const sectionStart = accumulatedHeight;
         const sectionEnd = sectionStart + totalSectionHeight;
        
-        if (scrollY >= sectionStart && scrollY <= sectionEnd) {
-          const relativeScroll = scrollY - sectionStart;
-          if (relativeScroll < imagePhaseHeight) {
-             const rawIndex = Math.floor(relativeScroll / SCROLL_PER_IMG);
-             const currentCount = section.count - rawIndex;
-             const isHeadVisible = i===0 && relativeScroll <=300;
-             setActiveData({
-               sectionIndex: i,
-               imgIndex: currentCount < 1 ? 1 : currentCount,
-               showCard: false,
-               bgPosition: isHeadVisible? "left" : "center"
-             });
-          } else {
-             setActiveData({
-               sectionIndex: i,
-               imgIndex: 1, 
-               showCard: true,
-               bgPosition: "left"
-             });
-          }
-          
+        if (scrollY >= sectionStart && scrollY < sectionEnd) {
+          setActiveData(prev => {
+             // 1. Enter new section -> Reset
+             if (prev.sectionIndex !== i) {
+                 return {
+                     ...prev,
+                     sectionIndex: i,
+                     imgIndex: section.count, 
+                     showCard: false,
+                     bgPosition: "center",
+                     isPlaying: false
+                 };
+             }
+             // 2. Trigger play if scrolling within section (implied by this function running)
+             // only if we haven't shown card yet and aren't already playing.
+             // Avoid trigger if strictly at top < 50 (handled above)
+             if (scrollY >= 50 && !prev.isPlaying && !prev.showCard && prev.imgIndex > 1) {
+                 return { ...prev, isPlaying: true };
+             }
+             return prev;
+          });
           return;
         }
 
         accumulatedHeight += totalSectionHeight;
       }
     };
-     setTimeout(() => { setIsSkeletonVisible(false); }, 3000);
+    
+    setTimeout(() => { setIsSkeletonVisible(false); }, 3000);
     window.addEventListener("scroll", handleScroll);
-    return () =>{ window.removeEventListener("scroll", handleScroll)
-    };
+    return () => { window.removeEventListener("scroll", handleScroll); };
   }, []);
 
   const currentSection = SECTIONS[activeData.sectionIndex];

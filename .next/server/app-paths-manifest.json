@@ -1,5 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/active-map/page": "app/active-map/page.js",
-  "/dynamic-vault/page": "app/dynamic-vault/page.js"
+  "/dynamic-vault/page": "app/dynamic-vault/page.js",
+  "/page": "app/page.js"
 }
