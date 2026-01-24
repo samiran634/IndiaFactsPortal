@@ -3,10 +3,33 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
+import { KNOWLEDGE_BASE } from "../data/knowledge_base";
+import { GlobalEngine } from "../globalEngine";
+import Link from "next/link";
+import { Globe, BookOpen, History } from "lucide-react";
+
 export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isVissible, setIsVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Engine Lookup
+  const entityId = Object.keys(KNOWLEDGE_BASE).find(key => 
+    KNOWLEDGE_BASE[key].title.toLowerCase() === fact.title.toLowerCase()
+  );
+  const actions = entityId ? GlobalEngine.getActions(entityId) : [];
+
+  // Fallback map action if places exist but no entity found
+  if (actions.length === 0 && fact.places && fact.places.length > 0) {
+      // Just take the first place for the main action
+      const firstPlace = fact.places[0];
+       actions.push({
+        type: 'navigate_map',
+        label: `View ${firstPlace.name}`,
+        url: `/active-map?state=${encodeURIComponent(firstPlace.name)}`,
+        stateName: firstPlace.name
+      });
+  }
 
   useEffect(() => {
     // Check for mobile screen
@@ -55,15 +78,6 @@ export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
     visible: { opacity: 1, transition: { duration: 0.5, delay: 0.2 } },
     exit: { opacity: 0, transition: { duration: 0.2 } }
   };
-  const sendRequestToActiveMap =(places)  =>{
-    return ()=>{
-      if(places && places.length>0){
-         location.href=`/active-map?places=${encodeURIComponent(JSON.stringify(places))}`;
-      }else{
-        alert("No place data available for this fact.");
-      }
-    }
-  }
 
   return (
     <>
@@ -143,13 +157,34 @@ export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
                       </div>
                     )}
                     {fact.places && fact.places.length > 0 && (
-                      <div className="pl-0 md:pl-8 flex flex-wrap gap-1 md:gap-2 mb-4 cursor-pointer" onClick={sendRequestToActiveMap(fact.places)}>
+                      <div className="pl-0 md:pl-8 flex flex-wrap gap-1 md:gap-2 mb-4 cursor-pointer">
                         {fact.places.map((place, i) => (
                           <span key={i} className="inline-flex items-center gap-1 px-2 md:px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                             📍 {place.name}
                           </span>
                         ))}
                       </div>
+                    )}
+
+                    {/* ACTIONS BAR - Global Engine Integration */}
+                    {actions.length > 0 && (
+                        <div className="pl-0 md:pl-8 mt-4 mb-4 flex flex-wrap gap-2">
+                             {actions.map((action, idx) => (
+                                <Link
+                                    key={idx}
+                                    href={action.url}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors uppercase tracking-wide no-underline ${
+                                        action.type === 'navigate_map' ? 'bg-amber-100 border-amber-300 text-amber-800 hover:bg-amber-200' :
+                                        action.type === 'navigate_vault' ? 'bg-indigo-100 border-indigo-300 text-indigo-800 hover:bg-indigo-200' :
+                                        'bg-gray-100 border-gray-300 text-gray-800'
+                                    }`}
+                                >
+                                    {action.type === 'navigate_map' && <Globe className="w-3 h-3" />}
+                                    {action.type === 'navigate_vault' && <BookOpen className="w-3 h-3" />}
+                                    {action.label}
+                                </Link>
+                            ))}
+                        </div>
                     )}
 
                     {/* Significance Note */}

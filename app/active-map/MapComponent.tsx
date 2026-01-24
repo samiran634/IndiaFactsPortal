@@ -15,8 +15,9 @@ const INDIA_GEO_URL = "/geojson/india.geojson";
 
 export default function MapChart() {
   const searchParams = useSearchParams();
-  const initialPlace: string | null = searchParams.get('place');
-  const placesParam: string | null = searchParams.get('places'); // 1. Get the places param
+  // Support both 'state' (from GlobalEngine) and legacy 'place' param
+  const stateParam: string | null = searchParams.get('state') || searchParams.get('place');
+  const placesParam: string | null = searchParams.get('places'); // Array of places for markers
 
   const [geoUrl, setGeoUrl] = useState(INDIA_GEO_URL);
   const [currentPlace, setCurrentPlace] = useState("India");
@@ -25,13 +26,14 @@ export default function MapChart() {
   const [tooltipContent, setTooltipContent] = useState<string>("");
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Handle Initial View (State Focus)
+  // Handle Initial View (State Focus from URL param)
   useEffect(() => {
-    if (initialPlace && STATE_URLS[initialPlace]) {
-      setGeoUrl(STATE_URLS[initialPlace]);
-      setCurrentPlace(initialPlace);
+    if (stateParam && STATE_URLS[stateParam]) {
+      setGeoUrl(STATE_URLS[stateParam]);
+      setCurrentPlace(stateParam);
+      setIsOpen(true); // Open sidebar when navigating via URL
     }
-  }, [initialPlace]);
+  }, [stateParam]);
 
   // 3. Handle Markers Animation (The Queue Logic)
   useEffect(() => {

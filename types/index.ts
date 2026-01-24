@@ -1,5 +1,5 @@
 // Module Types
-export type Module = 'freedom-scroll' | 'active-map' | 'dynamic-vault';
+export type Module = 'history' | 'active-map' | 'dynamic-vault';
 
 // Category Types
 export type Category = 

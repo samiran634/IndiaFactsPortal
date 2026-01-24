@@ -72,7 +72,7 @@ const SECTIONS = [
     description: "Welcome to the Freedom Scroll phase. Discover historical facts leading up to 1889.",
     sympho: "today",  // Image prefix
     format: "jpg",  // Image format
-    link: "/freedom-scroll", // Link for the card
+    link: "/history", // Link for the card
   },
  
 ];

@@ -1,43 +1,50 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Card } from "../utils/ui/fileUi";
-import { Polity_data } from "../utils/data/Politics";
-import { Economy_data } from "../utils/data/Economy";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { GlobalEngine } from "../utils/globalEngine";
 
 const PolityMainContent = () => {
-    // Merge data from both sources
-    const [combinedData, setCombinedData] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
 
-    useEffect(() => {
-        // Interleave or merge the data
-        const merged = [...Polity_data, ...Economy_data];
-        // Optional: Shuffle or sort by date if needed
-        setCombinedData(merged);
+    // Get data directly from KNOWLEDGE_BASE using GlobalEngine
+    const combinedData = useMemo(() => {
+        const entities = GlobalEngine.getEntitiesByTags(['polity', 'economy', 'constitution', 'industry']);
+        // Map to card-compatible format
+        return entities.map(entity => ({
+            id: entity.id,
+            title: entity.title,
+            content: [entity.shortDescription || '', entity.fullContent || ''].filter(Boolean),
+            type: entity.tags?.includes('economy') || entity.tags?.includes('industry') ? 'economy' : 'politics',
+            actions: GlobalEngine.getActions(entity.id)
+        }));
     }, []);
 
     const handleNext = () => {
-        setActiveIndex((prev) => (prev + 1) % combinedData.length);
+        if (combinedData.length > 0) {
+            setActiveIndex((prev) => (prev + 1) % combinedData.length);
+        }
     };
 
     const handlePrev = () => {
-        setActiveIndex((prev) => (prev - 1 + combinedData.length) % combinedData.length);
+        if (combinedData.length > 0) {
+            setActiveIndex((prev) => (prev - 1 + combinedData.length) % combinedData.length);
+        }
     };
 
     if (combinedData.length === 0) {
-        return <div className="text-white text-center mt-20">Loading data...</div>;
+        return <div className="text-white text-center mt-20">No polity/economy data available.</div>;
     }
 
     const getCardProps = (offset) => {
         const index = (activeIndex + offset + combinedData.length) % combinedData.length;
         const item = combinedData[index];
         return {
-            title: item.headding[0],
-            content: [item.description, item.content], // Using description and content as list items
-            type: item.type.toLowerCase(), // "politics" or "economy"
-            key: item.publishAT + index, // unique key
+            title: item.title,
+            content: item.content,
+            type: item.type,
+            key: item.id + index,
+            actions: item.actions
         };
     };
 

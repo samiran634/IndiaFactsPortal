@@ -74,10 +74,10 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
-// Validate ../../app/freedom-scroll/page.tsx
+// Validate ../../app/history/page.tsx
 {
-  type __IsExpected<Specific extends AppPageConfig<"/freedom-scroll">> = Specific
-  const handler = {} as typeof import("../../app/freedom-scroll/page.js")
+  type __IsExpected<Specific extends AppPageConfig<"/history">> = Specific
+  const handler = {} as typeof import("../../app/history/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

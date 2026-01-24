@@ -23,7 +23,7 @@ export default async function DynamicVaultPage() {
           < Link href="/"  className="text-gray-300 hover:text-gray-100 flex items-center gap-2">
             ← Back to Home
           </Link>
-          <h1 className="text-xl font-bold text-gray-500"> Dynamic Vault</h1>
+          <h1 className="text-xl font-bold text-gray-400"> Knowledge Vault</h1>
           <div className="w-24"></div>
         </div>
       </header>

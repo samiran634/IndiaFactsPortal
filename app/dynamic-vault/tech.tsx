@@ -1,61 +1,120 @@
 "use client";
-import  TerminalDemo  from "../utils/ui/terminalUi";
-import { useState } from "react";
-import { Tech_data } from "../utils/data/tech";
+import TerminalDemo from "../utils/ui/terminalUi";
+import { useState, useMemo } from "react";
+import { GlobalEngine } from "../utils/globalEngine";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 function TechNewsCards() {
-    const [newsIndex, setNewsIndex] = useState<number | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+    // Get science/tech data from KNOWLEDGE_BASE
+    const techData = useMemo(() => {
+        const entities = GlobalEngine.getEntitiesByTags(['science', 'technology', 'bio', 'physics', 'chemistry', 'environment', 'ecology', 'botany', 'genetics', 'health']);
+        // Map KB entities to TerminalInterface format with tags and actions
+        return entities.map(entity => ({
+            type: 'science',
+            headding: [entity.title],
+            description: entity.shortDescription || '',
+            url: `/dynamic-vault?entity=${entity.id}`,
+            content: entity.fullContent || '',
+            tags: entity.tags || [],
+            actions: GlobalEngine.getActions(entity.id)
+        }));
+    }, []);
+
+    const handleCardClick = (index: number) => {
+        setSelectedIndex(index);
+    };
+
+    const handleClose = () => {
+        setSelectedIndex(null);
+    };
+
+    if (techData.length === 0) {
+        return (
+            <div className="text-white text-center mt-20">
+                No science/tech data available.
+            </div>
+        );
+    }
+
+    const selectedData = selectedIndex !== null ? techData[selectedIndex] : null;
 
     return (
-        <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-wrap justify-center gap-16 mt-10 perspective-1000"
-        >
-            {Tech_data.map((element, index) => {
-                const isActive = newsIndex === index;
-                return (
+        <>
+            {/* Card Grid */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-wrap justify-center gap-8 mt-10 px-4"
+            >
+                {techData.map((element, index) => (
                     <div 
                         key={index}
-                        onMouseEnter={() => setNewsIndex(index)}
-                        onMouseLeave={() => setNewsIndex(null)} 
-                        className={`relative cursor-pointer flex flex-col items-center gap-2 group transition-all duration-300 ${isActive ? 'z-[100]' : 'z-10 hover:z-50'}`}
+                        onClick={() => handleCardClick(index)}
+                        className="cursor-pointer flex flex-col items-center gap-2 group transition-all duration-300 hover:scale-105"
                     >
-                        <img 
-                            src="/images/terminal.png" 
-                            alt="terminal image" 
-                            className="w-24 h-24 object-contain transition-transform duration-300 group-hover:scale-110 relative z-20"
-                        />
-                         <p className="text-cyan-400 font-mono text-sm max-w-50 text-center truncate bg-black/50 px-2 rounded-sm border border-transparent group-hover:border-cyan-500/30 transition-colors relative z-20">
+                        <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-green-900/50 to-cyan-900/50 rounded-xl border border-green-500/30 flex items-center justify-center group-hover:border-green-400 group-hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all">
+                            <img 
+                                src="/images/terminal.png" 
+                                alt="terminal" 
+                                className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                            />
+                        </div>
+                        <p className="text-cyan-400 font-mono text-xs md:text-sm max-w-24 md:max-w-32 text-center line-clamp-2 group-hover:text-cyan-300 transition-colors">
                             {element.headding[0]}
                         </p>
-
-                        <AnimatePresence>
-                            {isActive && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.9, y: -10, rotateX: 10 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-                                    exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:absolute md:top-full md:left-auto md:translate-x-0 md:translate-y-0 md:w-112.5 md:mt-4 z-10"
-                                >
-                                    {/* Invisible bridge for desktop hovering */}
-                                    <div className="hidden md:block absolute -top-4 inset-x-0 h-4 bg-transparent" />
-                                    
-                                    <div className="bg-black/95 backdrop-blur-xl border border-green-500/50 p-1 rounded-lg shadow-[0_0_50px_rgba(34,197,94,0.15)] overflow-hidden max-h-[80vh] overflow-y-auto custom-scrollbar">
-                                         <div className="bg-slate-950/50 rounded p-4">
-                                            <TerminalDemo data={element} />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </div>
-                )
-            })}
-        </motion.div>
-    )
+                ))}
+            </motion.div>
+
+            {/* Modal Popup */}
+            <AnimatePresence>
+                {selectedData && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={handleClose}
+                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
+                        />
+                        
+                        {/* Modal */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[80vw] lg:w-[60vw] max-w-3xl max-h-[85vh] z-[101]"
+                        >
+                            <div className="bg-slate-950 border border-green-500/50 rounded-xl shadow-[0_0_60px_rgba(34,197,94,0.2)] overflow-hidden">
+                                {/* Header with Close Button */}
+                                <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-900/30 to-cyan-900/30 border-b border-green-500/30">
+                                    <h3 className="text-green-400 font-mono text-sm font-semibold truncate pr-4">
+                                        📚 {selectedData.headding[0]}
+                                    </h3>
+                                    <button
+                                        onClick={handleClose}
+                                        className="p-1.5 rounded-lg bg-red-900/50 hover:bg-red-700 text-red-300 hover:text-white transition-colors border border-red-500/30 hover:border-red-400"
+                                    >
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                                
+                                {/* Content */}
+                                <div className="p-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                    <TerminalDemo data={selectedData} />
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </>
+    );
 }
 export default TechNewsCards;

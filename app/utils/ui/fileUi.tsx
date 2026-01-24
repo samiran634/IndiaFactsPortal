@@ -9,9 +9,12 @@ interface CardProps {
   position: "left" | "center" | "right";
   onClick?: () => void;
   type?: "politics" | "economy";
+  actions?: { label: string; url: string; type: string }[];
 }
 
-export const Card: React.FC<CardProps> = ({ title, content, isActive, position, onClick, type = "politics" }) => {
+import { Globe, History, BookOpen } from "lucide-react";
+
+export const Card: React.FC<CardProps> = ({ title, content, isActive, position, onClick, type = "politics", actions }) => {
   const isCenter = position === "center";
   const [isMobile, setIsMobile] = React.useState(false);
 
@@ -66,7 +69,7 @@ export const Card: React.FC<CardProps> = ({ title, content, isActive, position, 
         {title}
       </h3>
       
-      <div className="flex-1 overflow-y-auto w-full custom-scrollbar">
+      <div className="flex-1 overflow-y-auto w-full custom-scrollbar mb-2">
         {content && content.length > 0 ? (
           <ul className="space-y-3 text-sm leading-relaxed">
             {content.map((point, i) => (
@@ -82,6 +85,22 @@ export const Card: React.FC<CardProps> = ({ title, content, isActive, position, 
           </div>
         )}
       </div>
+
+      {isCenter && actions && actions.length > 0 && (
+          <div className="w-full pt-3 border-t border-white/10 flex flex-wrap gap-2 justify-center">
+              {actions.map((action, idx) => (
+                  <a 
+                      key={idx}
+                      href={action.url}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 transition-colors uppercase tracking-wide"
+                  >
+                      {action.type === 'navigate_map' && <Globe className="w-3 h-3" />}
+                      {action.type === 'navigate_timeline' && <History className="w-3 h-3" />}
+                      {action.label}
+                  </a>
+              ))}
+          </div>
+      )}
     </motion.div>
   );
 };
