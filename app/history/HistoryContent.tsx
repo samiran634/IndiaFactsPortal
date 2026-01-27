@@ -2,20 +2,25 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getDefaultFacts, HistoricalFact } from "./data";
 import { ScrollStack } from "./ScrollStack";
-import { KNOWLEDGE_BASE } from "../utils/data/knowledge_base";
+import { knowledgeService, KnowledgeEntity } from "../utils/knowledgeService";
 import { GlobalEngine } from "../utils/globalEngine";
+import { Loader2 } from "lucide-react";
 
 export default function HistoryContent() {
   const searchParams = useSearchParams();
   const entityId = searchParams.get('entity');
   const tagFilter = searchParams.get('tag');
+  
+  const [facts, setFacts] = useState<HistoricalFact[]>([]);
+  const [source, setSource] = useState<'linked' | 'filtered' | 'default'>('default');
+  const [focusedEntity, setFocusedEntity] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Convert KB entity to HistoricalFact format
-  const entityToFact = (entity: typeof KNOWLEDGE_BASE[string]): HistoricalFact => {
-    // Extract key points from fullContent (lines starting with -)
+  const entityToFact = (entity: KnowledgeEntity): HistoricalFact => {
     const keyPoints = entity.fullContent
       ?.split('\n')
       .filter(line => line.trim().startsWith('-'))
@@ -39,49 +44,71 @@ export default function HistoryContent() {
     };
   };
 
-  // Get facts based on linking logic
-  const { facts, source, focusedEntity } = useMemo(() => {
-    // Priority 1: Specific entity requested
-    if (entityId && KNOWLEDGE_BASE[entityId]) {
-      const entity = KNOWLEDGE_BASE[entityId];
-      const mainFact = entityToFact(entity);
+  // Load facts based on linking logic
+  useEffect(() => {
+    const loadFacts = async () => {
+      setIsLoading(true);
       
-      // Get related history entities
-      const relatedEntities = GlobalEngine.getEntitiesByTags(['history', 'mughal', 'states'])
-        .filter(e => e.id !== entityId)
-        .slice(0, 6)
-        .map(entityToFact);
-      
-      return { 
-        facts: [mainFact, ...relatedEntities], 
-        source: 'linked',
-        focusedEntity: entity.title
-      };
-    }
+      try {
+        // Priority 1: Specific entity requested
+        if (entityId) {
+          const entity = await knowledgeService.getKnowledgeById(entityId);
+          if (entity) {
+            const mainFact = entityToFact(entity);
+            
+            // Get related history entities
+            const relatedEntities = await GlobalEngine.getEntitiesByTags(['history', 'mughal', 'states']);
+            const relatedFacts = relatedEntities
+              .filter(e => e.id !== entityId)
+              .slice(0, 6)
+              .map(entityToFact);
+            
+            setFacts([mainFact, ...relatedFacts]);
+            setSource('linked');
+            setFocusedEntity(entity.title);
+            setIsLoading(false);
+            return;
+          }
+        }
 
-    // Priority 2: Tag-based filtering
-    if (tagFilter) {
-      const taggedEntities = GlobalEngine.getEntitiesByTags([tagFilter])
-        .filter(e => e.tags?.includes('history') || e.tags?.includes('mughal') || e.tags?.includes('states'))
-        .slice(0, 10)
-        .map(entityToFact);
-      
-      if (taggedEntities.length > 0) {
-        return { facts: taggedEntities, source: 'filtered', focusedEntity: null };
+        // Priority 2: Tag-based filtering
+        if (tagFilter) {
+          const taggedEntities = await GlobalEngine.getEntitiesByTags([tagFilter]);
+          const filtered = taggedEntities
+            .filter(e => e.tags?.includes('history') || e.tags?.includes('mughal') || e.tags?.includes('states'))
+            .slice(0, 10)
+            .map(entityToFact);
+          
+          if (filtered.length > 0) {
+            setFacts(filtered);
+            setSource('filtered');
+            setFocusedEntity(null);
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        // Default: Combine KB history entries with default facts
+        const historyEntities = await GlobalEngine.getEntitiesByTags(['history', 'mughal', 'states']);
+        const historyFacts = historyEntities
+          .slice(0, 6)
+          .map(entityToFact);
+        
+        const defaultFacts = getDefaultFacts();
+        setFacts([...historyFacts, ...defaultFacts]);
+        setSource('default');
+        setFocusedEntity(null);
+      } catch (error) {
+        console.error('Failed to load facts:', error);
+        // Fallback to default facts
+        setFacts(getDefaultFacts());
+        setSource('default');
+      } finally {
+        setIsLoading(false);
       }
-    }
-
-    // Default: Combine KB history entries with default facts
-    const historyEntities = GlobalEngine.getEntitiesByTags(['history', 'mughal', 'states'])
-      .slice(0, 6)
-      .map(entityToFact);
-    
-    const defaultFacts = getDefaultFacts();
-    return { 
-      facts: [...historyEntities, ...defaultFacts], 
-      source: 'default',
-      focusedEntity: null
     };
+
+    loadFacts();
   }, [entityId, tagFilter]);
 
   const displayEra = facts[0]?.era || "Historical Records";
@@ -132,7 +159,12 @@ export default function HistoryContent() {
 
       {/* Content Area */}
       <div className="max-w-7xl mx-auto px-2 md:px-4 py-6 md:py-12 flex flex-col items-center justify-center min-h-[80vh]">     
-        {facts && facts.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center text-gray-400 gap-4">
+            <Loader2 className="w-8 h-8 animate-spin" />
+            <p>Loading historical records...</p>
+          </div>
+        ) : facts && facts.length > 0 ? (
           <div className="flex justify-center text-left h-screen w-screen flex-col">
             <div className="flex text-center border-b-2 border-amber-900/20 pb-2 mb-4 px-1.5">
               <p className="text-amber-800/70 font-serif italic mx-2 text-sm md:text-base">

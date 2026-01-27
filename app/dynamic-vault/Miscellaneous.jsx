@@ -1,8 +1,9 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { GlobalEngine } from "../utils/globalEngine";
 import { GlobeIcon, FileTextIcon, RocketIcon, StarIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { Loader2 } from "lucide-react";
 
 // Helper to get random or relevant icon based on tags
 const getIcon = (tags, index) => {
@@ -15,22 +16,48 @@ const getIcon = (tags, index) => {
 };
 
 const MiscellaneousMainContent = () => {
-    // Get miscellaneous data from KNOWLEDGE_BASE
-    const items = useMemo(() => {
-        const entities = GlobalEngine.getEntitiesByTags([
-            'current_affairs', 'culture', 'sports', 'defense', 
-            'awards', 'misc', 'international_relations', 'geography'
-        ]);
-        // Map to BentoCard format
-        return entities.slice(0, 9).map(entity => ({
-            id: entity.id,
-            name: entity.title,
-            description: entity.shortDescription || entity.fullContent?.slice(0, 150) || '',
-            imageURL: '',
-            href: `/dynamic-vault?entity=${entity.id}`,
-            tags: entity.tags
-        }));
+    const [items, setItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Load data from API
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const entities = await GlobalEngine.getEntitiesByTags([
+                    'current_affairs', 'culture', 'sports', 'defense', 
+                    'awards', 'misc', 'international_relations', 'geography'
+                ]);
+                
+                // Map to BentoCard format
+                const mappedItems = entities.slice(0, 9).map(entity => ({
+                    id: entity.id,
+                    name: entity.title,
+                    description: entity.shortDescription || entity.fullContent?.slice(0, 150) || '',
+                    imageURL: '',
+                    href: `/dynamic-vault?entity=${entity.id}`,
+                    tags: entity.tags
+                }));
+                
+                setItems(mappedItems);
+            } catch (error) {
+                console.error('Failed to load miscellaneous data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        loadData();
     }, []);
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center text-cyan-400 mt-20 gap-4">
+                <Loader2 className="w-8 h-8 animate-spin" />
+                <p className="text-sm">Loading knowledge hub...</p>
+            </div>
+        );
+    }
 
     if (items.length === 0) {
         return (

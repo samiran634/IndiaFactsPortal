@@ -1,4 +1,4 @@
-import { KNOWLEDGE_BASE, KnowledgeEntity } from './data/knowledge_base';
+import { knowledgeService, KnowledgeEntity } from './knowledgeService';
 
 export interface LinkedSegment {
   text: string;
@@ -8,29 +8,26 @@ export interface LinkedSegment {
 /**
  * Scans the provided text and identifies substrings that match titles in the Knowledge Base.
  * Returns an array of segments (text + optional link).
+ * Note: This is now an async function since it fetches from API.
  */
-export function parseContentWithLinks(text: string): LinkedSegment[] {
+export async function parseContentWithLinks(text: string): Promise<LinkedSegment[]> {
   if (!text) return [];
 
+  // Fetch knowledge base from API
+  const knowledgeBase = await knowledgeService.getAllKnowledge();
+
   // 1. Build a map of potential keywords (titles) -> IDs
-  // To avoid matching common words, we could filter by length or explicit list.
-  // For now, let's match all Titles.
   const keywordMap: Record<string, string> = {};
   
-  Object.values(KNOWLEDGE_BASE).forEach(entity => {
+  Object.values(knowledgeBase).forEach(entity => {
     // Normalize keys: lowercase for case-insensitive matching
     keywordMap[entity.title.toLowerCase()] = entity.id;
-    
-    // We could add entity.tags or aliases here if we wanted "Steal Plant" to link to "Rourkela" etc.
   });
 
   // 2. Sort keywords by length (descending) to match longest phrases first
-  // e.g. match "Second Five Year Plan" before "Plan"
   const keywords = Object.keys(keywordMap).sort((a, b) => b.length - a.length);
 
   // 3. Simple replacement strategy
-  // We'll use a regex to find matches. 
-  // Escaping regex special chars is important if titles have them.
   const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   
   const pattern = new RegExp(`(${keywords.map(escapeRegExp).join('|')})`, 'gi');
@@ -56,10 +53,44 @@ export function parseContentWithLinks(text: string): LinkedSegment[] {
 }
 
 /**
- * explicitly formatted links like [[Concept Name]] or [[id:concept_id]]
- * This function can handle those if we decide to use that format.
+ * Sync version that works with pre-fetched data (for use in components that already have data)
+ */
+export function parseContentWithLinksSync(text: string, knowledgeBase: Record<string, KnowledgeEntity>): LinkedSegment[] {
+  if (!text) return [];
+
+  const keywordMap: Record<string, string> = {};
+  
+  Object.values(knowledgeBase).forEach(entity => {
+    keywordMap[entity.title.toLowerCase()] = entity.id;
+  });
+
+  const keywords = Object.keys(keywordMap).sort((a, b) => b.length - a.length);
+  const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`(${keywords.map(escapeRegExp).join('|')})`, 'gi');
+  
+  const parts = text.split(pattern);
+  const result: LinkedSegment[] = [];
+
+  parts.forEach(part => {
+    if (!part) return;
+    
+    const lowerPart = part.toLowerCase();
+    if (keywordMap[lowerPart]) {
+      result.push({
+        text: part,
+        linkId: keywordMap[lowerPart]
+      });
+    } else {
+      result.push({ text: part });
+    }
+  });
+
+  return result;
+}
+
+/**
+ * Explicitly formatted links like [[Concept Name]] or [[id:concept_id]]
  */
 export function parseWikiLinks(text: string): LinkedSegment[] {
-    // Basic implementation for [[ ... ]] style if needed later
     return []; 
 }

@@ -1,26 +1,58 @@
 "use client";
 import TerminalDemo from "../utils/ui/terminalUi";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { GlobalEngine } from "../utils/globalEngine";
+import { KnowledgeEntity } from "../utils/knowledgeService";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
+
+interface TechDataItem {
+    type: string;
+    headding: string[];
+    description: string;
+    url: string;
+    content: string;
+    tags: string[];
+    actions: any[];
+}
 
 function TechNewsCards() {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [techData, setTechData] = useState<TechDataItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Get science/tech data from KNOWLEDGE_BASE
-    const techData = useMemo(() => {
-        const entities = GlobalEngine.getEntitiesByTags(['science', 'technology', 'bio', 'physics', 'chemistry', 'environment', 'ecology', 'botany', 'genetics', 'health']);
-        // Map KB entities to TerminalInterface format with tags and actions
-        return entities.map(entity => ({
-            type: 'science',
-            headding: [entity.title],
-            description: entity.shortDescription || '',
-            url: `/dynamic-vault?entity=${entity.id}`,
-            content: entity.fullContent || '',
-            tags: entity.tags || [],
-            actions: GlobalEngine.getActions(entity.id)
-        }));
+    // Load science/tech data from API
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const entities = await GlobalEngine.getEntitiesByTags([
+                    'science', 'technology', 'bio', 'physics', 'chemistry', 
+                    'environment', 'ecology', 'botany', 'genetics', 'health'
+                ]);
+                
+                // Map KB entities to TerminalInterface format with tags and actions
+                const mappedData = await Promise.all(
+                    entities.map(async (entity: KnowledgeEntity) => ({
+                        type: 'science',
+                        headding: [entity.title],
+                        description: entity.shortDescription || '',
+                        url: `/dynamic-vault?entity=${entity.id}`,
+                        content: entity.fullContent || '',
+                        tags: entity.tags || [],
+                        actions: await GlobalEngine.getActions(entity.id)
+                    }))
+                );
+                
+                setTechData(mappedData);
+            } catch (error) {
+                console.error('Failed to load tech data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        loadData();
     }, []);
 
     const handleCardClick = (index: number) => {
@@ -30,6 +62,15 @@ function TechNewsCards() {
     const handleClose = () => {
         setSelectedIndex(null);
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center text-green-400 mt-20 gap-4">
+                <Loader2 className="w-8 h-8 animate-spin" />
+                <p className="font-mono text-sm">Loading knowledge base...</p>
+            </div>
+        );
+    }
 
     if (techData.length === 0) {
         return (
@@ -50,7 +91,7 @@ function TechNewsCards() {
                 transition={{ duration: 0.5 }}
                 className="flex flex-wrap justify-center gap-8 mt-10 px-4"
             >
-                {techData.map((element, index) => (
+                {techData.map((element: TechDataItem, index: number) => (
                     <div 
                         key={index}
                         onClick={() => handleCardClick(index)}
@@ -106,7 +147,7 @@ function TechNewsCards() {
                                 </div>
                                 
                                 {/* Content */}
-                                <div className="p-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                <div className="p-4 max-h-[70vh] overflow-y-auto bg-black custom-scrollbar">
                                     <TerminalDemo data={selectedData} />
                                 </div>
                             </div>

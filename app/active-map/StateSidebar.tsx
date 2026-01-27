@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Lightbulb, BookOpen, Newspaper, Loader2, Link as LinkIcon, ExternalLink, History, TrendingUp, Globe, Atom, Search } from "lucide-react";
-import { parseContentWithLinks, LinkedSegment } from "../utils/knowledgeLinker";
-import { KNOWLEDGE_BASE, KnowledgeEntity } from "../utils/data/knowledge_base";
+import { parseContentWithLinksSync, LinkedSegment } from "../utils/knowledgeLinker";
+import { knowledgeService, KnowledgeEntity } from "../utils/knowledgeService";
 import GlobalKnowledgeModal from "./GlobalKnowledgeModal";
 import { GlobalEngine } from "../utils/globalEngine";
 
@@ -24,9 +24,13 @@ interface StateSidebarProps {
     data: StateData | null;
 }
 
-// Helper component to render text with clickable links
-const LinkedText: React.FC<{ text: string; onLinkClick: (id: string) => void }> = ({ text, onLinkClick }) => {
-    const segments = parseContentWithLinks(text);
+// Helper component to render text with clickable links (using pre-fetched data)
+const LinkedText: React.FC<{ 
+    text: string; 
+    onLinkClick: (id: string) => void; 
+    knowledgeBase: Record<string, KnowledgeEntity>;
+}> = ({ text, onLinkClick, knowledgeBase }) => {
+    const segments = parseContentWithLinksSync(text, knowledgeBase);
 
     return (
         <span>
@@ -53,12 +57,44 @@ const LinkedText: React.FC<{ text: string; onLinkClick: (id: string) => void }> 
 
 // Component to display details of a selected knowledge entity
 const KnowledgeCard: React.FC<{ entityId: string; onClose: () => void }> = ({ entityId, onClose }) => {
-    const entity = KNOWLEDGE_BASE[entityId];
-    // Import dynamically or pass as prop if needed, but here we can just ensure the hook/function is used.
-    // Since GlobalEngine is a simple object, we can use it directly.
-    const actions = React.useMemo(() => GlobalEngine.getActions(entityId), [entityId]);
+    const [entity, setEntity] = useState<KnowledgeEntity | null>(null);
+    const [actions, setActions] = useState<any[]>([]);
+    const [relatedEntities, setRelatedEntities] = useState<KnowledgeEntity[]>([]);
 
-    if (!entity) return null;
+    useEffect(() => {
+        const loadData = async () => {
+            const entityData = await knowledgeService.getKnowledgeById(entityId);
+            setEntity(entityData);
+            
+            if (entityData) {
+                const entityActions = await GlobalEngine.getActions(entityId);
+                setActions(entityActions);
+                
+                // Load related entities
+                if (entityData.relatedIds && entityData.relatedIds.length > 0) {
+                    const related = await Promise.all(
+                        entityData.relatedIds.map(id => knowledgeService.getKnowledgeById(id))
+                    );
+                    setRelatedEntities(related.filter((e): e is KnowledgeEntity => e !== null));
+                }
+            }
+        };
+        loadData();
+    }, [entityId]);
+
+    if (!entity) {
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fixed inset-0 z-50 flex items-center justify-center"
+            >
+                <div className="bg-white rounded-xl p-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+                </div>
+            </motion.div>
+        );
+    }
 
     return (
         <motion.div
@@ -124,19 +160,16 @@ const KnowledgeCard: React.FC<{ entityId: string; onClose: () => void }> = ({ en
                         </div>
                     )}
 
-                    {entity.relatedIds && entity.relatedIds.length > 0 && (
+                    {relatedEntities.length > 0 && (
                         <div className="pt-4 border-t border-gray-100">
                             <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Related Topics</h4>
                             <div className="flex flex-wrap gap-2">
-                                {entity.relatedIds.map(id => {
-                                    const related = KNOWLEDGE_BASE[id];
-                                    return related ? (
-                                        <span key={id} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs border border-gray-200">
-                                            <ExternalLink className="w-3 h-3" />
-                                            {related.title}
-                                        </span>
-                                    ) : null;
-                                })}
+                                {relatedEntities.map(related => (
+                                    <span key={related.id} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs border border-gray-200">
+                                        <ExternalLink className="w-3 h-3" />
+                                        {related.title}
+                                    </span>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -151,6 +184,8 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
     const [loadingNews, setLoadingNews] = useState(false);
     const [isHamburgurVisible, setIsHamburgurVisible] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [knowledgeBase, setKnowledgeBase] = useState<Record<string, KnowledgeEntity>>({});
+    const [relatedKBEntities, setRelatedKBEntities] = useState<KnowledgeEntity[]>([]);
 
     // Tab state
     type TabType = 'knowledge' | 'history' | 'economy' | 'geography' | 'science';
@@ -159,12 +194,24 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
     // Track selected entity for the Knowledge Graph popup
     const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
-    // Get all KB entities related to this state using GlobalEngine's smart detection
-    const relatedKBEntities = React.useMemo(() => {
-        if (!stateName || stateName === 'India') return [];
+    // Load knowledge base on mount
+    useEffect(() => {
+        const loadKnowledge = async () => {
+            const data = await knowledgeService.getAllKnowledge();
+            setKnowledgeBase(data);
+        };
+        loadKnowledge();
+    }, []);
+
+    // Get KB entities related to this state
+    useEffect(() => {
+        if (!stateName || stateName === 'India' || Object.keys(knowledgeBase).length === 0) {
+            setRelatedKBEntities([]);
+            return;
+        }
         
-        // Get all entities and filter those that mention this state
-        return GlobalEngine.getAllEntities().filter(entity => {
+        // Filter entities that mention this state
+        const related = Object.values(knowledgeBase).filter(entity => {
             const contentToScan = [
                 entity.title || '',
                 entity.shortDescription || '',
@@ -175,16 +222,16 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
             const detectedStates = GlobalEngine.detectStates(contentToScan);
             return detectedStates.includes(stateName);
         });
-    }, [stateName]);
+        
+        setRelatedKBEntities(related);
+    }, [stateName, knowledgeBase]);
 
     useEffect(() => {
         if (isOpen && stateName) {
             setLoadingNews(true);
             setNews([]);
-            // Reset tab to knowledge on open (show KB data first)
             setActiveTab('knowledge');
 
-            // Simulate API call with sample data
             setTimeout(() => {
                 setNews([
                     `${stateName} achieves record agricultural output this season.`,
@@ -199,12 +246,11 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
     useEffect(() => {
         if (!isOpen) {
             setIsHamburgurVisible(false);
-            setSelectedEntityId(null); // Close popup when sidebar closes
+            setSelectedEntityId(null);
         }
     }, [isOpen]);
 
     const handleLinkClick = (id: string) => {
-        console.log("Clicked link:", id);
         setSelectedEntityId(id);
     };
 
@@ -212,7 +258,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
     const getTabContent = () => {
         if (!data) return [];
         switch (activeTab) {
-            case 'history': return data.history || data.facts || []; // Fallback to facts if history missing
+            case 'history': return data.history || data.facts || [];
             case 'economy': return data.economy || [];
             case 'geography': return data.geography || [];
             case 'science': return data.science || [];
@@ -230,7 +276,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                     {isHamburgurVisible ? (
                         <div className="fixed top-4 right-4 z-50">
                             <button
-                                onClick={() => setIsHamburgurVisible(false)} // Show sidebar
+                                onClick={() => setIsHamburgurVisible(false)}
                                 className="p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 transition-colors"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -269,7 +315,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                                                 <Search className="w-5 h-5" />
                                             </button>
                                             <button
-                                                onClick={() => setIsHamburgurVisible(true)} // Hide sidebar, show hamburger
+                                                onClick={() => setIsHamburgurVisible(true)}
                                                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                                             >
                                                 <X className="w-6 h-6 text-gray-500" />
@@ -388,7 +434,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                                                                     activeTab === 'economy' ? 'bg-emerald-400' :
                                                                     activeTab === 'geography' ? 'bg-sky-400' : 'bg-violet-400'
                                                                 }`} />
-                                                                <LinkedText text={item} onLinkClick={handleLinkClick} />
+                                                                <LinkedText text={item} onLinkClick={handleLinkClick} knowledgeBase={knowledgeBase} />
                                                             </li>
                                                         ))}
                                                     </motion.ul>
@@ -400,7 +446,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                                                 )}
                                             </div>
 
-                                            {/* Important Concepts Section (Always visible) */}
+                                            {/* Important Concepts Section */}
                                             {data.concepts && data.concepts.length > 0 && (
                                                 <div className="bg-blue-50 rounded-xl p-5 border border-blue-100 mt-6">
                                                     <div className="flex items-center gap-2 mb-4 text-blue-600">
@@ -411,7 +457,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                                                         {data.concepts.map((concept, index) => (
                                                             <li key={index} className="flex gap-3 text-gray-700 leading-relaxed text-sm">
                                                                 <span className="text-blue-400 mt-1.5">•</span>
-                                                                <LinkedText text={concept} onLinkClick={handleLinkClick} />
+                                                                <LinkedText text={concept} onLinkClick={handleLinkClick} knowledgeBase={knowledgeBase} />
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -435,7 +481,7 @@ const StateSidebar: React.FC<StateSidebarProps> = ({ isOpen, onClose, stateName,
                                                         {news.map((item, index) => (
                                                             <li key={index} className="flex gap-3 text-gray-700 leading-relaxed text-sm">
                                                                 <span className="text-indigo-400 mt-1">•</span>
-                                                                <LinkedText text={item} onLinkClick={handleLinkClick} />
+                                                                <LinkedText text={item} onLinkClick={handleLinkClick} knowledgeBase={knowledgeBase} />
                                                             </li>
                                                         ))}
                                                     </ul>

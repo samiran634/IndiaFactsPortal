@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-import { KNOWLEDGE_BASE } from "../data/knowledge_base";
+import { knowledgeService } from "../knowledgeService";
 import { GlobalEngine } from "../globalEngine";
 import Link from "next/link";
 import { Globe, BookOpen, History } from "lucide-react";
@@ -12,24 +12,49 @@ export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isVissible, setIsVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [actions, setActions] = useState([]);
 
-  // Engine Lookup
-  const entityId = Object.keys(KNOWLEDGE_BASE).find(key => 
-    KNOWLEDGE_BASE[key].title.toLowerCase() === fact.title.toLowerCase()
-  );
-  const actions = entityId ? GlobalEngine.getActions(entityId) : [];
+  useEffect(() => {
+    // Fetch actions from API
+    const loadActions = async () => {
+      try {
+        const knowledgeBase = await knowledgeService.getAllKnowledge();
+        
+        // Find entity ID by matching title
+        const entityId = Object.keys(knowledgeBase).find(key => 
+          knowledgeBase[key].title.toLowerCase() === fact.title.toLowerCase()
+        );
+        
+        if (entityId) {
+          const fetchedActions = await GlobalEngine.getActions(entityId);
+          setActions(fetchedActions);
+        } else if (fact.places && fact.places.length > 0) {
+          // Fallback map action if places exist but no entity found
+          const firstPlace = fact.places[0];
+          setActions([{
+            type: 'navigate_map',
+            label: `View ${firstPlace.name}`,
+            url: `/active-map?state=${encodeURIComponent(firstPlace.name)}`,
+            stateName: firstPlace.name
+          }]);
+        }
+      } catch (error) {
+        console.error('Failed to load actions:', error);
+        // Fallback to places if available
+        if (fact.places && fact.places.length > 0) {
+          const firstPlace = fact.places[0];
+          setActions([{
+            type: 'navigate_map',
+            label: `View ${firstPlace.name}`,
+            url: `/active-map?state=${encodeURIComponent(firstPlace.name)}`,
+            stateName: firstPlace.name
+          }]);
+        }
+      }
+    };
 
-  // Fallback map action if places exist but no entity found
-  if (actions.length === 0 && fact.places && fact.places.length > 0) {
-      // Just take the first place for the main action
-      const firstPlace = fact.places[0];
-       actions.push({
-        type: 'navigate_map',
-        label: `View ${firstPlace.name}`,
-        url: `/active-map?state=${encodeURIComponent(firstPlace.name)}`,
-        stateName: firstPlace.name
-      });
-  }
+    loadActions();
+  }, [fact.title, fact.places]);
 
   useEffect(() => {
     // Check for mobile screen
@@ -59,7 +84,7 @@ export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
       transition: { 
         duration: 1.2, 
         ease: "easeInOut",
-        when: "beforeChildren" // Open scroll, then show text
+        when: "beforeChildren"
       }
     },
     exit: { 
@@ -68,7 +93,7 @@ export const SamuraiScroll = ({ fact, index, width = "max-w-3xl" }) => {
       transition: { 
         duration: 0.8, 
         ease: "easeInOut",
-        when: "afterChildren" // Hide text, then close scroll
+        when: "afterChildren"
       }
     }
   };

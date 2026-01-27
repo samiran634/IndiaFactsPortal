@@ -84,555 +84,364 @@ export const SHORT_NAMES: { [key: string]: string } = {
 };
 export const factsMap: { [key: string]: any } = {
   "Uttar Pradesh": {
-    history: [
-      "Home to the Taj Mahal, one of the Seven Wonders of the World.",
-      "Key region in the First War of Independence (1857)."
+    facts: [
+      "Uttar Pradesh is the most populous state in India.",
+      "It is home to the Taj Mahal, one of the Seven Wonders of the World.",
+      "The Ganges River flows through the state."
     ],
-    economy: [
-      "Leading agricultural producer (Sugarcane, Wheat).",
-      "Major contributor to Indian politics."
-    ],
-    geography: [
-      "The Ganges River flows through the state.",
-      "Most populous state in India."
-    ],
-    science: [],
     concepts: [
       "Rich cultural and historical heritage.",
+      "Major contributor to Indian politics.",
+      "Leading agricultural producer."
     ]
   },
 
   "Maharashtra": {
-    history: [
-      "Ajanta and Ellora caves are UNESCO World Heritage Sites.",
-      "Land of the Maratha Empire."
-    ],
-    economy: [
+    facts: [
+      "Maharashtra is the second-most populous state in India.",
       "Mumbai is the financial capital of India.",
-      "Industrial and economic powerhouse."
+      "Ajanta and Ellora caves are UNESCO World Heritage Sites."
     ],
-    geography: [
-      "Second-most populous state in India.",
-      "Deccan Plateau region."
-    ],
-    science: [],
     concepts: [
+      "Industrial and economic powerhouse.",
       "Center of Bollywood film industry.",
       "Diverse geography and culture."
     ]
   },
 
   "Bihar": {
-    history: [
-      "Birthplace of Buddhism and Jainism.",
+    facts: [
+      "Bihar is one of the oldest inhabited regions in the world.",
       "Nalanda University was a major ancient center of learning.",
-      "One of the oldest inhabited regions in the world."
-    ],
-    economy: [
-      "Agriculture-based economy."
-    ],
-    geography: [
       "The Ganges flows through the state."
     ],
-    science: [],
     concepts: [
+      "Birthplace of Buddhism and Jainism.",
+      "Agriculture-based economy.",
       "Rich ancient history."
     ]
   },
 
   "West Bengal": {
-    history: [
+    facts: [
       "Kolkata was the capital of British India till 1911.",
-      "Center of the Bengal Renaissance."
-    ],
-    economy: [
-      "Jute and Rice production hub."
-    ],
-    geography: [
       "The Sundarbans is the largest mangrove forest in the world.",
       "The Hooghly River flows through the state."
     ],
-    science: [],
     concepts: [
       "Strong literary and artistic traditions.",
-      "Cultural hub of eastern India."
+      "Cultural hub of eastern India.",
+      "Major center for education and research."
     ]
   },
 
   "Tamil Nadu": {
-    history: [
-      "Home to the Chola, Chera, and Pandya dynasties.",
-      "Has one of the oldest classical languages, Tamil."
-    ],
-    economy: [
+    facts: [
+      "Tamil Nadu has one of the oldest classical languages, Tamil.",
       "Chennai is a major IT and automobile hub.",
-      "Leading manufacturing state."
+      "The state has many Dravidian-style temples."
     ],
-    geography: [
-      "The state has many Dravidian-style temples.",
-      "Southernmost state on the mainland coast."
-    ],
-    science: [],
     concepts: [
       "Ancient temple architecture.",
-      "Strong classical music and dance traditions."
+      "Strong classical music and dance traditions.",
+      "Leading manufacturing state."
     ]
   },
 
   "Karnataka": {
-    history: [
-      "Home to the Vijayanagara Empire (Hampi).",
-      "Second-highest number of protected monuments."
-    ],
-    economy: [
+    facts: [
       "Bengaluru is known as the Silicon Valley of India.",
-      "Major coffee producer."
+      "The state has the second-highest number of protected monuments.",
+      "Jog Falls is one of the highest waterfalls in India."
     ],
-    geography: [
-      "Jog Falls is one of the highest waterfalls in India.",
-      "Diverse climatic regions."
-    ],
-    science: [],
     concepts: [
       "Major IT and startup ecosystem.",
-      "Blend of modern tech and heritage."
+      "Blend of modern tech and heritage.",
+      "Diverse climatic regions."
     ]
   },
 
   "Kerala": {
-    history: [
-      "Major center of the spice trade (Vasco da Gama landed here).",
-      "Strong tradition of Ayurveda."
+    facts: [
+      "Kerala has the highest literacy rate in India.",
+      "The state is famous for its backwaters.",
+      "It has the highest life expectancy in India."
     ],
-    economy: [
-      "Tourism-driven economy.",
-      "High remittances from Gulf countries."
-    ],
-    geography: [
-      "Famous for its backwaters and houseboats.",
-      "Highest literacy rate in India."
-    ],
-    science: [],
     concepts: [
       "Strong human development indicators.",
+      "Tourism-driven economy.",
       "Unique healthcare and education model."
     ]
   },
 
   "Rajasthan": {
-    history: [
-      "Land of Kings (Rajputs).",
+    facts: [
+      "Rajasthan is the largest state by area.",
+      "The Thar Desert is located here.",
       "Jaipur is known as the Pink City."
     ],
-    economy: [
-      "Tourism-based economy.",
-      "Mineral rich."
-    ],
-    geography: [
-      "Largest state by area.",
-      "The Thar Desert is located here."
-    ],
-    science: [],
     concepts: [
       "Rich royal and warrior history.",
-      "Distinct folk art and music."
+      "Distinct folk art and music.",
+      "Tourism-based economy."
     ]
   },
 
   "Gujarat": {
-    history: [
-      "Birthplace of Mahatma Gandhi.",
-      "Lothal was a major Indus Valley Civilization port."
+    facts: [
+      "Gujarat has the longest coastline in India.",
+      "The Statue of Unity is located here.",
+      "It is the birthplace of Mahatma Gandhi."
     ],
-    economy: [
-      "Major port and trade state.",
-      "Rapid industrial growth."
-    ],
-    geography: [
-      "Longest coastline in India.",
-      "The Statue of Unity is located here."
-    ],
-    science: [],
     concepts: [
-      "Strong entrepreneurial culture."
+      "Strong entrepreneurial culture.",
+      "Rapid industrial growth.",
+      "Major port and trade state."
     ]
   },
 
   "Punjab": {
-    history: [
+    facts: [
+      "Punjab is known as the Granary of India.",
       "Amritsar houses the Golden Temple.",
-      "Center of Sikhism."
+      "The state has fertile alluvial soil."
     ],
-    economy: [
-      "Known as the Granary of India (Wheat bowl).",
-      "Agriculture-driven economy."
-    ],
-    geography: [
-      "Land of Five Rivers.",
-      "Fertile alluvial soil."
-    ],
-    science: [],
     concepts: [
+      "Agriculture-driven economy.",
       "Vibrant culture and festivals.",
       "Strong military tradition."
     ]
   },
 
   "Haryana": {
-    history: [
-      "Kurukshetra is the site of the Mahabharata war.",
-      "Panipat saw three historic battles."
+    facts: [
+      "Haryana surrounds Delhi on three sides.",
+      "It is a major automobile manufacturing hub.",
+      "Kurukshetra is a key historical site."
     ],
-    economy: [
-      "Gurugram is a major financial and tech hub.",
-      "Major automobile manufacturing hub."
-    ],
-    geography: [
-      "Surrounds Delhi on three sides.",
-      "Mainly agrarian landscape."
-    ],
-    science: [],
     concepts: [
-      "rapid urbanization.",
-      "strong sports culture."
+      "Rapid urbanization.",
+      "Strong sports culture.",
+      "Agriculture and industry mix."
     ]
   },
 
   "Madhya Pradesh": {
-    history: [
-      "Sanchi Stupa is a Buddhist complex.",
-      "Khajuraho temples (Chandela dynasty)."
+    facts: [
+      "Madhya Pradesh is known as the Heart of India.",
+      "Kanha and Bandhavgarh are famous national parks.",
+      "The Narmada River flows through the state."
     ],
-    economy: [
-      "Diamond mines in Panna.",
-      "Agriculture-based economy."
-    ],
-    geography: [
-      "Known as the Heart of India.",
-      "Kanha and Bandhavgarh national parks."
-    ],
-    science: [],
     concepts: [
       "Rich wildlife biodiversity.",
-      "Tribal cultural heritage."
+      "Tribal cultural heritage.",
+      "Agriculture-based economy."
     ]
   },
 
   "Chhattisgarh": {
-    history: [
-      "Carved out of Madhya Pradesh in 2000.",
-      "Ancient region of Dakshin Kosala."
+    facts: [
+      "Chhattisgarh has dense forests.",
+      "It is rich in mineral resources.",
+      "The state was formed in 2000."
     ],
-    economy: [
-      "Rich in mineral resources (Coal, Iron ore).",
-      "Steel production hub (Bhilai)."
-    ],
-    geography: [
-      "Has dense forests (Dandakaranya).",
-      "Indravati National Park."
-    ],
-    science: [],
     concepts: [
       "Tribal-dominated population.",
-      "Mining-based economy."
+      "Mining-based economy.",
+      "Rapid industrial development."
     ]
   },
 
   "Jharkhand": {
-    history: [
-      "Carved out of Bihar in 2000.",
-      "Land of Birsa Munda's rebellion."
+    facts: [
+      "Jharkhand is rich in coal and iron ore.",
+      "The state was formed in 2000.",
+      "Betla National Park is located here."
     ],
-    economy: [
-      "Rich in coal and iron ore (Jamshedpur/Tata).",
-      "Industrial growth potential."
-    ],
-    geography: [
-      "Chota Nagpur Plateau.",
-      "Betla National Park."
-    ],
-    science: [],
     concepts: [
       "Mineral-driven economy.",
-      "Strong tribal heritage."
+      "Strong tribal heritage.",
+      "Industrial growth potential."
     ]
   },
 
   "Odisha": {
-    history: [
-      "Ancient Kalinga Empire.",
-      "Konark Sun Temple (Black Pagoda)."
+    facts: [
+      "Odisha has the Konark Sun Temple.",
+      "It has a long coastline along the Bay of Bengal.",
+      "The state is prone to cyclones."
     ],
-    economy: [
-      "Rourkela Steel Plant (Second Five Year Plan).",
-      "Mineral-rich economy."
-    ],
-    geography: [
-      "Chilika Lake (largest brackish water lagoon).",
-      "Prone to cyclones."
-    ],
-    science: [],
     concepts: [
       "Ancient temple architecture.",
+      "Mineral-rich economy.",
       "Strong disaster management systems."
     ]
   },
 
   "Assam": {
-    history: [
-      "Ahom Kingdom ruled for 600 years.",
-      "Gateway to Northeast India."
+    facts: [
+      "Assam is famous for its tea gardens.",
+      "The Brahmaputra River flows through the state.",
+      "Kaziranga National Park is located here."
     ],
-    economy: [
-      "Famous for Tea and Oil (Digboi).",
-      "Silk production (Muga silk)."
-    ],
-    geography: [
-      "Brahmaputra River flows through the state.",
-      "Kaziranga: One-horned Rhinoceros."
-    ],
-    science: [],
     concepts: [
       "Biodiversity hotspot.",
+      "Tea-based economy.",
       "Cultural diversity."
     ]
   },
 
   "Arunachal Pradesh": {
-    history: [
-      "Tawang Monastery is the largest in India.",
-      "McMahon Line border dispute."
+    facts: [
+      "It is the easternmost state of India.",
+      "Tawang Monastery is located here.",
+      "It shares borders with China, Bhutan, and Myanmar."
     ],
-    economy: [
-      "Hydroelectric potential.",
-      "Tourism and forestry."
-    ],
-    geography: [
-      "Easternmost state (Land of Dawn-lit Mountains).",
-      "Shares borders with China, Bhutan, Myanmar."
-    ],
-    science: [],
     concepts: [
       "Strategic importance.",
-      "Tribal cultural diversity."
+      "Tribal cultural diversity.",
+      "Rich natural landscapes."
     ]
   },
 
   "Manipur": {
-    history: [
-      "Independent kingdom before 1949.",
-      "Birthplace of modern polo."
+    facts: [
+      "Manipur is known as the Jewel of India.",
+      "Loktak Lake is the largest freshwater lake in the Northeast.",
+      "It is the birthplace of modern polo."
     ],
-    economy: [
-      "Handloom and handicraft industry.",
-      "Agriculture (Rice)."
-    ],
-    geography: [
-      "Jewel of India.",
-      "Loktak Lake (Floating Phumdis).",
-    ],
-    science: [],
     concepts: [
       "Distinct dance and martial arts.",
-      "Strategic border state."
+      "Strategic border state.",
+      "Rich indigenous culture."
     ]
   },
 
   "Meghalaya": {
-    history: [
-      "Carved out of Assam.",
-      "Meaning: Abode of Clouds."
+    facts: [
+      "Meghalaya is one of the wettest places on Earth.",
+      "Shillong is known as the Scotland of the East.",
+      "Living root bridges are found here."
     ],
-    economy: [
-      "Tourism and Mining.",
-      "Horticulture."
-    ],
-    geography: [
-      "Wettest places on Earth (Mawsynram/Cherrapunji).",
-      "Living root bridges."
-    ],
-    science: [],
     concepts: [
-      "Matrilineal society (Khasi/Garo).",
+      "Eco-tourism hub.",
+      "Unique tribal traditions.",
       "Rainforest biodiversity."
     ]
   },
 
   "Mizoram": {
-    history: [
-      "Mizo Peace Accord (1986).",
-      "Previously Lushai Hills district."
+    facts: [
+      "Mizoram has a high literacy rate.",
+      "It shares an international border with Myanmar.",
+      "The state has rolling hills."
     ],
-    economy: [
-      "Bamboo industry.",
-      "Agriculture (Jhum cultivation)."
-    ],
-    geography: [
-      "Blue Mountain (Phawngpui).",
-      "Shares border with Myanmar/Bangladesh."
-    ],
-    science: [],
     concepts: [
       "Peaceful social structure.",
-      "High literacy rate."
+      "Strong community values.",
+      "Forest-based economy."
     ]
   },
 
   "Nagaland": {
-    history: [
-      "Kohima: Major WWII battle site.",
-      "Statehood in 1963."
+    facts: [
+      "Nagaland is known for the Hornbill Festival.",
+      "It has many indigenous tribes.",
+      "Kohima was a major WWII battle site."
     ],
-    economy: [
-      "Agriculture and forestry.",
-      "Tourism (Hornbill Festival)."
-    ],
-    geography: [
-      "Mount Saramati highest peak.",
-      "Diverse tribal population."
-    ],
-    science: [],
     concepts: [
       "Strong tribal identity.",
+      "Cultural festivals.",
       "Traditional governance systems."
     ]
   },
 
   "Tripura": {
-    history: [
-      "Ruled by Manikya dynasty.",
-      "Ujjayanta Palace."
+    facts: [
+      "Tripura shares a long border with Bangladesh.",
+      "Ujjayanta Palace is a major landmark.",
+      "It has a rich royal history."
     ],
-    economy: [
-      "Rubber and Bamboo production.",
-      "Natural Gas reserves."
-    ],
-    geography: [
-      "Surrounded by Bangladesh on three sides.",
-      "Clouded Leopard NP."
-    ],
-    science: [],
     concepts: [
       "Cultural blend of tribes and Bengalis.",
+      "Agriculture and bamboo-based economy.",
       "Strategic connectivity role."
     ]
   },
 
   "Sikkim": {
-    history: [
-      "Became Indian state in 1975.",
-      "Ruled by Chogyals previously."
+    facts: [
+      "Sikkim is the least populous state in India.",
+      "Kanchenjunga, the third-highest peak, is located here.",
+      "It became an Indian state in 1975."
     ],
-    economy: [
-      "India's first Organic State.",
-      "Pharmaceutical hub."
-    ],
-    geography: [
-      "Kanchenjunga (3rd highest peak).",
-      "Specific flora (Rhododendrons)."
-    ],
-    science: [],
     concepts: [
       "Eco-friendly policies.",
+      "Organic farming leader.",
       "Himalayan biodiversity."
     ]
   },
 
   "Andhra Pradesh": {
-    history: [
-      "Satavahana dynasty.",
+    facts: [
+      "Visakhapatnam is a major port city.",
+      "The state has a long eastern coastline.",
       "Tirupati is a major pilgrimage center."
     ],
-    economy: [
-      "Visakhapatnam is a major port.",
-      "Aquaculture hub."
-    ],
-    geography: [
-      "Long eastern coastline.",
-      "Godavari and Krishna and deltas."
-    ],
-    science: [],
     concepts: [
       "Strong maritime economy.",
+      "Agriculture and aquaculture hub.",
       "Rapid infrastructure growth."
     ]
   },
 
   "Telangana": {
-    history: [
-      "Formed in 2014 from Andhra Pradesh.",
-      "Golconda Fort and Charminar."
+    facts: [
+      "Telangana was formed in 2014.",
+      "Hyderabad is a major IT hub.",
+      "The Golconda Fort is located here."
     ],
-    economy: [
-      "Hyderabad is a global IT/Pharma hub.",
-      "Agriculture (Rice bowl)."
-    ],
-    geography: [
-      "Deccan Plateau.",
-      "Semi-arid climate."
-    ],
-    science: [],
     concepts: [
       "Tech-driven economy.",
-      "Historical Deccan heritage."
+      "Historical Deccan heritage.",
+      "Startup-friendly ecosystem."
     ]
   },
 
   "Himachal Pradesh": {
-    history: [
-      "Shimla: Summer capital of British India.",
-      "Ancient temples."
+    facts: [
+      "Himachal Pradesh is a Himalayan state.",
+      "Shimla was the summer capital of British India.",
+      "The state has abundant hydroelectric power."
     ],
-    economy: [
-      "Hydroelectric power.",
-      "Apple production."
-    ],
-    geography: [
-      "Rohtang Pass and Spiti Valley.",
-      "Himalayan state."
-    ],
-    science: [],
     concepts: [
       "Tourism-driven economy.",
-      "Clean and green governance."
+      "Clean and green governance.",
+      "Mountain agriculture."
     ]
   },
 
   "Uttarakhand": {
-    history: [
-      "Known as Devbhoomi (Land of Gods).",
-      "Chipko Movement origin."
+    facts: [
+      "Uttarakhand is known as Devbhoomi.",
+      "The Ganges originates here.",
+      "It has many pilgrimage sites."
     ],
-    economy: [
-      "Tourism (Char Dham Yatra).",
-      "Hydropower."
-    ],
-    geography: [
-      "Ganges and Yamuna originate here.",
-      "Jim Corbett National Park."
-    ],
-    science: [],
     concepts: [
       "Spiritual tourism.",
+      "Himalayan ecology.",
       "Disaster-prone mountainous terrain."
     ]
   },
 
   "Goa": {
-    history: [
-      "Portuguese colony till 1961.",
-      "Operation Vijay (Annexation)."
+    facts: [
+      "Goa is India's smallest state by area.",
+      "It was a Portuguese colony till 1961.",
+      "The state is famous for its beaches."
     ],
-    economy: [
-      "Tourism and Mining (Iron ore).",
-      "Fishing industry."
-    ],
-    geography: [
-      "Smallest state by area.",
-      "Mandovi and Zuari rivers."
-    ],
-    science: [],
     concepts: [
+      "Tourism-based economy.",
       "Indo-Portuguese culture.",
       "High per capita income."
     ]

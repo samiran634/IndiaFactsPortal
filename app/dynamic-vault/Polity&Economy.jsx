@@ -1,23 +1,41 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "../utils/ui/fileUi";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { GlobalEngine } from "../utils/globalEngine";
 
 const PolityMainContent = () => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [combinedData, setCombinedData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Get data directly from KNOWLEDGE_BASE using GlobalEngine
-    const combinedData = useMemo(() => {
-        const entities = GlobalEngine.getEntitiesByTags(['polity', 'economy', 'constitution', 'industry']);
-        // Map to card-compatible format
-        return entities.map(entity => ({
-            id: entity.id,
-            title: entity.title,
-            content: [entity.shortDescription || '', entity.fullContent || ''].filter(Boolean),
-            type: entity.tags?.includes('economy') || entity.tags?.includes('industry') ? 'economy' : 'politics',
-            actions: GlobalEngine.getActions(entity.id)
-        }));
+    // Load data from API using GlobalEngine
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const entities = await GlobalEngine.getEntitiesByTags(['polity', 'economy', 'constitution', 'industry']);
+                
+                // Map to card-compatible format with async actions
+                const mappedData = await Promise.all(
+                    entities.map(async (entity) => ({
+                        id: entity.id,
+                        title: entity.title,
+                        content: [entity.shortDescription || '', entity.fullContent || ''].filter(Boolean),
+                        type: entity.tags?.includes('economy') || entity.tags?.includes('industry') ? 'economy' : 'politics',
+                        actions: await GlobalEngine.getActions(entity.id)
+                    }))
+                );
+                
+                setCombinedData(mappedData);
+            } catch (error) {
+                console.error('Failed to load polity/economy data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        loadData();
     }, []);
 
     const handleNext = () => {
@@ -31,6 +49,15 @@ const PolityMainContent = () => {
             setActiveIndex((prev) => (prev - 1 + combinedData.length) % combinedData.length);
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center text-amber-400 mt-20 gap-4">
+                <Loader2 className="w-8 h-8 animate-spin" />
+                <p className="text-sm">Loading polity & economy data...</p>
+            </div>
+        );
+    }
 
     if (combinedData.length === 0) {
         return <div className="text-white text-center mt-20">No polity/economy data available.</div>;

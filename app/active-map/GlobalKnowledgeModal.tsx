@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, Search, Book, FlaskConical, History, GraduationCap } from "lucide-react";
-import { KNOWLEDGE_BASE } from "../utils/data/knowledge_base";
+import { X, Search, Book, FlaskConical, History, GraduationCap, Loader2 } from "lucide-react";
+import { knowledgeService, KnowledgeEntity } from "../utils/knowledgeService";
 
 interface GlobalKnowledgeModalProps {
     onClose: () => void;
@@ -13,9 +13,27 @@ interface GlobalKnowledgeModalProps {
 const GlobalKnowledgeModal: React.FC<GlobalKnowledgeModalProps> = ({ onClose, onSelectEntity }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filtertag, setFilterTag] = useState<string | null>(null);
+    const [knowledgeData, setKnowledgeData] = useState<KnowledgeEntity[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Load knowledge data from API
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const data = await knowledgeService.getAllKnowledge();
+                setKnowledgeData(Object.values(data));
+            } catch (error) {
+                console.error('Failed to load knowledge:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadData();
+    }, []);
 
     const filteredData = useMemo(() => {
-        return Object.values(KNOWLEDGE_BASE).filter(entity => {
+        return knowledgeData.filter(entity => {
             const matchesSearch = 
                 entity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 entity.shortDescription?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -25,7 +43,7 @@ const GlobalKnowledgeModal: React.FC<GlobalKnowledgeModalProps> = ({ onClose, on
 
             return matchesSearch && matchesTag;
         });
-    }, [searchQuery, filtertag]);
+    }, [searchQuery, filtertag, knowledgeData]);
 
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -83,7 +101,7 @@ const GlobalKnowledgeModal: React.FC<GlobalKnowledgeModalProps> = ({ onClose, on
                             <FlaskConical className="w-3 h-3" /> Science
                         </button>
                          <button 
-                            onClick={() => setFilterTag('bio')} // Assumes 'biology' tag usage
+                            onClick={() => setFilterTag('bio')}
                             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border flex items-center gap-1 ${filtertag === 'bio' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-white text-gray-600 border-gray-200 hover:bg-emerald-50'}`}
                         >
                             <GraduationCap className="w-3 h-3" /> Biology
@@ -93,14 +111,17 @@ const GlobalKnowledgeModal: React.FC<GlobalKnowledgeModalProps> = ({ onClose, on
 
                 {/* Results List */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-3 bg-gray-50/30">
-                    {filteredData.length > 0 ? (
+                    {isLoading ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                            <Loader2 className="w-8 h-8 animate-spin mb-3" />
+                            <p>Loading knowledge base...</p>
+                        </div>
+                    ) : filteredData.length > 0 ? (
                         filteredData.map((entity) => (
                             <button
                                 key={entity.id}
                                 onClick={() => {
                                     onSelectEntity(entity.id);
-                                    // We don't close this modal immediately, or do we? 
-                                    // Usually better UX to close it so the card can open.
                                     onClose(); 
                                 }}
                                 className="w-full text-left bg-white p-4 rounded-xl border border-gray-100 hover:border-indigo-300 hover:shadow-md transition-all group"

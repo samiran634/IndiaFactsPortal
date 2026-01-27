@@ -1,4 +1,4 @@
-import { KNOWLEDGE_BASE } from "./data/knowledge_base";
+import { knowledgeService, KnowledgeEntity } from "./knowledgeService";
 import { STATE_URLS } from "./data/state_data";
 
 export type ViewAction = 
@@ -37,7 +37,7 @@ function detectStatesInContent(content: string): string[] {
     'patna': 'Bihar',
     'hyderabad': 'Telangana',
     'bhubaneswar': 'Odisha',
-    'chandigarh': 'Punjab', // Also could be Haryana
+    'chandigarh': 'Punjab',
     'dehradun': 'Uttarakhand',
     'shimla': 'Himachal Pradesh',
     'thiruvananthapuram': 'Kerala',
@@ -85,12 +85,12 @@ export const GlobalEngine = {
   /**
    * Get meaningful actions for a given entity based on available metadata
    */
-  getActions: (entityId: string): ViewAction[] => {
-    const entity = KNOWLEDGE_BASE[entityId];
+  getActions: async (entityId: string): Promise<ViewAction[]> => {
+    const entity = await knowledgeService.getKnowledgeById(entityId);
     if (!entity) return [];
 
     const actions: ViewAction[] = [];
-    const addedStates = new Set<string>(); // Prevent duplicate state actions
+    const addedStates = new Set<string>();
 
     // 1. Map Navigation - from explicit geoLocations
     if (entity.geoLocations && entity.geoLocations.length > 0) {
@@ -151,8 +151,8 @@ export const GlobalEngine = {
   /**
    * Gets the primary destination URL
    */
-  getPrimaryLink: (entityId: string): string => {
-    const entity = KNOWLEDGE_BASE[entityId];
+  getPrimaryLink: async (entityId: string): Promise<string> => {
+    const entity = await knowledgeService.getKnowledgeById(entityId);
     if (!entity) return '#';
 
     if (entity.primaryView === 'map' && entity.geoLocations?.[0]) {
@@ -168,8 +168,9 @@ export const GlobalEngine = {
   /**
    * Get all entities matching any of the given tags
    */
-  getEntitiesByTags: (tags: string[]) => {
-    return Object.values(KNOWLEDGE_BASE).filter(entity => 
+  getEntitiesByTags: async (tags: string[]): Promise<KnowledgeEntity[]> => {
+    const allKnowledge = await knowledgeService.getAllKnowledge();
+    return Object.values(allKnowledge).filter(entity => 
       entity.tags?.some(t => tags.includes(t))
     );
   },
@@ -177,7 +178,16 @@ export const GlobalEngine = {
   /**
    * Get all entities (for browsing)
    */
-  getAllEntities: () => Object.values(KNOWLEDGE_BASE),
+  getAllEntities: async (): Promise<KnowledgeEntity[]> => {
+    return knowledgeService.getAllEntitiesArray();
+  },
+
+  /**
+   * Get a single entity by ID
+   */
+  getEntityById: async (entityId: string): Promise<KnowledgeEntity | null> => {
+    return knowledgeService.getKnowledgeById(entityId);
+  },
 
   /**
    * Detect states mentioned in any text
