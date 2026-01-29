@@ -147,7 +147,7 @@ function TechNewsCards() {
                                 </div>
                                 
                                 {/* Content */}
-                                <div className="p-4 max-h-[70vh] overflow-y-auto bg-black custom-scrollbar">
+                                <div className="p-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                                     <TerminalDemo data={selectedData} />
                                 </div>
                             </div>
