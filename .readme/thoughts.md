@@ -25,6 +25,9 @@ question -- how many pictures are required to creact a good miraj ?
     	again to change the topic user have to click the right down boutton
 
 
-		UI is so far so good for 3:4 screen now i have to tackle 20:8 ratio screen 
-		for 20:8 i think it will be best not to move the sticky background image insead of the movement change the opacity.
-		like when there is some text dropp its opacitty else make the opacity 1. also i think to make mobile usage work i just have to modify the main page contedns the other contains are already static (this is just a postulate).
+    	UI is so far so good for 3:4 screen now i have to tackle 20:8 ratio screen
+    	for 20:8 i think it will be best not to move the sticky background image insead of the movement change the opacity.
+    	like when there is some text dropp its opacitty else make the opacity 1. also i think to make mobile usage work i just have to modify the main page contedns the other contains are already static (this is just a postulate).
+
+
+    now i just have to  connect the server.
