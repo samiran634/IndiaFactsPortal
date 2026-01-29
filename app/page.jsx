@@ -90,11 +90,14 @@ export default function Home() {
     sectionIndex: 0,
     imgIndex: 6,
     showCard: false,
-    bgPosition: "left" 
+    bgPosition: "left",
+    isPlaying: false,
+    direction: "down" // Track scroll direction for animation
   });
   const [isSecletonVisible, setIsSkeletonVisible] = useState(true);
   const [scrollDir, setScrollDir] = useState(null); // "up" or "down"
   const [isScrolling, setIsScrolling] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
   const isMobile = useIsMobile();
   
   // --- HEADER ANIMATION ---
@@ -117,18 +120,42 @@ export default function Home() {
   useEffect(() => {
     let intervalId = null;
     if (activeData.isPlaying) {
+      const currentSection = SECTIONS[activeData.sectionIndex];
+      const isScrollingDown = activeData.direction === "down";
+      
       intervalId = setInterval(() => {
         setActiveData(prev => {
-          if (prev.imgIndex <= 1) {
-            clearInterval(intervalId);
-            return { ...prev, imgIndex: 1, showCard: true, bgPosition: "left", isPlaying: false };
+          if (isScrollingDown) {
+            // Scrolling DOWN: count down from max to 1, then show card
+            if (prev.imgIndex <= 1) {
+              clearInterval(intervalId);
+              return { ...prev, imgIndex: 1, showCard: true, bgPosition: "left", isPlaying: false };
+            }
+            return { ...prev, imgIndex: prev.imgIndex - 1, bgPosition: "center" };
+          } else {
+            // Scrolling UP: count up from 1 to max, then transition to previous section
+            if (prev.imgIndex >= currentSection.count) {
+              clearInterval(intervalId);
+              // Transition complete - reset for previous section if exists
+              if (prev.sectionIndex > 0) {
+                return {
+                  sectionIndex: prev.sectionIndex - 1,
+                  imgIndex: 1,
+                  showCard: true,
+                  bgPosition: "left",
+                  isPlaying: false,
+                  direction: "up"
+                };
+              }
+              return { ...prev, imgIndex: currentSection.count, bgPosition: "left", isPlaying: false };
+            }
+            return { ...prev, imgIndex: prev.imgIndex + 1, bgPosition: "center", showCard: false };
           }
-          return { ...prev, imgIndex: prev.imgIndex - 1, bgPosition: "center" };
         });
       }, 400);
     }
     return () => { if (intervalId) clearInterval(intervalId); };
-  }, [activeData.isPlaying, activeData.sectionIndex]);
+  }, [activeData.isPlaying, activeData.sectionIndex, activeData.direction]);
 
   useEffect(() => {
     // --- PRELOAD IMAGES ---
@@ -139,10 +166,28 @@ export default function Home() {
       }
     });
 
-    let lastScrollY = window.scrollY;
+    // --- HANDLE FORCED SECTION CHANGE (from SectionTracker clicks) ---
+    const handleForceSectionChange = (e) => {
+      const { sectionIndex } = e.detail;
+      const section = SECTIONS[sectionIndex];
+      setActiveData({
+        sectionIndex: sectionIndex,
+        imgIndex: section.count,
+        showCard: false,
+        bgPosition: "center",
+        isPlaying: false,
+        direction: "down"
+      });
+    };
+    
+    window.addEventListener('forceSectionChange', handleForceSectionChange);
+
+    let prevScrollY = window.scrollY;
     let timeoutId = null;
     const handleScroll = () => {
       const scrollY = window.scrollY;
+      const scrollingDown = scrollY > prevScrollY;
+      const scrollingUp = scrollY < prevScrollY;
       
       // Force reset at the very top (fix for "photo6.png should be displayed")
       if (scrollY < 50) {
@@ -156,21 +201,25 @@ export default function Home() {
                    imgIndex: SECTIONS[0].count, 
                    showCard: false,
                    bgPosition: desiredPos,
-                   isPlaying: false
+                   isPlaying: false,
+                   direction: "down"
                };
            }
            return prev;
         });
       }
 
-      if (Math.abs(scrollY - lastScrollY) > 5) {
-        if (scrollY > lastScrollY) {
+      // Update scroll direction state
+      if (Math.abs(scrollY - prevScrollY) > 5) {
+        if (scrollingDown) {
           setScrollDir("down");
-        } else {
+          setLastScrollY(scrollY);
+        } else if (scrollingUp) {
           setScrollDir("up");
+          setLastScrollY(scrollY);
         }
       }
-      lastScrollY = scrollY;
+      prevScrollY = scrollY;
       
       if (scrollY > 100) { 
         setIsScrolling(true);
@@ -195,23 +244,32 @@ export default function Home() {
        
         if (scrollY >= sectionStart && scrollY < sectionEnd) {
           setActiveData(prev => {
-             // 1. Enter new section -> Reset
+             // 1. Enter new section -> Reset with proper direction
              if (prev.sectionIndex !== i) {
+                 // Determine direction based on section change
+                 const newDirection = i > prev.sectionIndex ? "down" : "up";
+                 
+                 // When entering a new section, properly reset state
                  return {
-                     ...prev,
                      sectionIndex: i,
-                     imgIndex: section.count, 
-                     showCard: false,
-                     bgPosition: "center",
-                     isPlaying: false
+                     imgIndex: newDirection === "down" ? section.count : 1, 
+                     showCard: newDirection === "up", // Show card if scrolling up into section
+                     bgPosition: newDirection === "up" ? "left" : "center",
+                     isPlaying: false,
+                     direction: newDirection
                  };
              }
-             // 2. Trigger play if scrolling within section (implied by this function running)
-             // only if we haven't shown card yet and aren't already playing.
-             // Avoid trigger if strictly at top < 50 (handled above)
-             if (scrollY >= 50 && !prev.isPlaying && !prev.showCard && prev.imgIndex > 1) {
-                 return { ...prev, isPlaying: true };
+             
+             // 2. Scrolling DOWN: Trigger forward animation
+             if (scrollingDown && scrollY >= 50 && !prev.isPlaying && !prev.showCard && prev.imgIndex > 1) {
+                 return { ...prev, isPlaying: true, direction: "down" };
              }
+             
+             // 3. Scrolling UP: Trigger reverse animation to exit section
+             if (scrollingUp && prev.showCard && !prev.isPlaying) {
+                 return { ...prev, isPlaying: true, direction: "up", showCard: false };
+             }
+             
              return prev;
           });
           return;
@@ -223,7 +281,10 @@ export default function Home() {
     
     setTimeout(() => { setIsSkeletonVisible(false); }, 3000);
     window.addEventListener("scroll", handleScroll);
-    return () => { window.removeEventListener("scroll", handleScroll); };
+    return () => { 
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('forceSectionChange', handleForceSectionChange);
+    };
   }, []);
 
   const currentSection = SECTIONS[activeData.sectionIndex];

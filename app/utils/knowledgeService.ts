@@ -5,6 +5,8 @@
  * Uses in-memory cache only for the current session to avoid duplicate requests.
  */
 
+import { DUMMY_KNOWLEDGE } from "./data/dummyKnowledge";
+
 export interface KnowledgeEntity {
   id: string;
   title: string;
@@ -79,8 +81,8 @@ class KnowledgeService {
       console.log(`✅ Loaded ${Object.keys(knowledgeRecord).length} knowledge entries`);
       return knowledgeRecord;
     } catch (error) {
-      console.error('❌ Failed to fetch knowledge:', error);
-      return {};
+      console.error('❌ Failed to fetch knowledge, using dummy data fallback:', error);
+      return DUMMY_KNOWLEDGE;
     }
   }
 

@@ -24,11 +24,20 @@ const SectionTracker: React.FC<SectionTrackerProps> = ({ activeSection = 0 }) =>
 
   // Calculate scroll position for a section
   const scrollToSection = (sectionIndex: number) => {
+    // Dispatch custom event to force reset state in page.jsx
+    window.dispatchEvent(new CustomEvent('forceSectionChange', { 
+      detail: { sectionIndex } 
+    }));
+    
     let scrollTarget = 0;
     for (let i = 0; i < sectionIndex; i++) {
       scrollTarget += (SECTION_HEIGHTS[i] * SCROLL_PER_IMG) + CARD_BUFFER;
     }
-    window.scrollTo({ top: scrollTarget + 100, behavior: 'smooth' });
+    
+    // Small delay to allow state reset before scrolling
+    setTimeout(() => {
+      window.scrollTo({ top: scrollTarget + 100, behavior: 'smooth' });
+    }, 50);
     setIsOpen(false);
   };
 
