@@ -8,6 +8,7 @@ import RightScrollUp from "./utils/scrollUp/right";
 import RightScrollDown from "./utils/scrollDown/right";
 import LeftScrollUp from "./utils/scrollUp/left";
 import SectionTracker from "./components/SectionTracker";
+import NavigationButton from "./utils/Buttons";
 
 // Hook to detect mobile (20:8 ratio screens)
 const useIsMobile = () => {
@@ -44,6 +45,19 @@ const useIsMobile = () => {
 
 */
 const SECTIONS = [
+  {
+    id :"hero",
+    title: "Fact Finder",
+    folder: "facts",
+    count: 4,
+    description: "Learn new facts with every scroll. Store the knowledge you gain and make available to others.",
+
+    sympho: "fact",
+    format: "png",
+    link: "/",
+    tagline: "In a world full of information, be the one who knows more.",
+    /*this portion will be displayed like now how the header portion being displaed. no need to bring the cards here the goal of this portoin is to teach user how to user the app. make some images with text in it to teach user the work flow the app in a good way . the chnge of the backgroun will occoure on the buton click here and where the seciotn end or the images are finished than play the existiong background change logic present in the remining three section . make sure the clickable buttons contain resanable text which should be pass to the boutton component as props */
+  },
    {
     id: "vault",
     title: "Knowledge Vault",
@@ -88,9 +102,9 @@ export default function Home() {
   // --- STATE ---
   const [activeData, setActiveData] = useState({
     sectionIndex: 0,
-    imgIndex: 6,
+    imgIndex: 4, // Hero section has 4 images
     showCard: false,
-    bgPosition: "left",
+    bgPosition: "center", // Start centered on load
     isPlaying: false,
     direction: "down" // Track scroll direction for animation
   });
@@ -115,39 +129,68 @@ export default function Home() {
     so show much per section will consum is = (count * SCROLL_PER_IMG) + CARD_BUFFER
 
   */
+ /*
+ ----v2 -----
+  shifting the logic form scrolling animation to click button animation to avoid complex scroll handling issues
+  there will be a up and down at the up and downn of the sticky background image which on click will trigger the background change. 
+  now the buttons will have some properties to dictate there working to the user.
+  like next , you have undertand the concept to go forward
+  previous , read again to  understood the concept.
+
+ */
 
   // --- ANIMATION EFFECT ---
   useEffect(() => {
     let intervalId = null;
     if (activeData.isPlaying) {
       const currentSection = SECTIONS[activeData.sectionIndex];
-      const isScrollingDown = activeData.direction === "down";
+      const isGoingDown = activeData.direction === "down";
+      const isHeroSection = activeData.sectionIndex === 0;
       
       intervalId = setInterval(() => {
         setActiveData(prev => {
-          if (isScrollingDown) {
-            // Scrolling DOWN: count down from max to 1, then show card
+          if (isGoingDown) {
+            // Going DOWN: count down from max to 1
             if (prev.imgIndex <= 1) {
               clearInterval(intervalId);
+              
+              // HERO SECTION: Skip card, auto-transition to next section
+              if (isHeroSection && prev.sectionIndex < SECTIONS.length - 1) {
+                const nextSection = SECTIONS[prev.sectionIndex + 1];
+                return {
+                  sectionIndex: prev.sectionIndex + 1,
+                  imgIndex: nextSection.count,
+                  showCard: false,
+                  bgPosition: "center",
+                  isPlaying: true, // Auto-start animation for vault section
+                  direction: "down"
+                };
+              }
+              
+              // OTHER SECTIONS: Show card normally
               return { ...prev, imgIndex: 1, showCard: true, bgPosition: "left", isPlaying: false };
             }
             return { ...prev, imgIndex: prev.imgIndex - 1, bgPosition: "center" };
           } else {
-            // Scrolling UP: count up from 1 to max, then transition to previous section
+            // Going UP: count up from 1 to max, then transition to previous section
             if (prev.imgIndex >= currentSection.count) {
               clearInterval(intervalId);
-              // Transition complete - reset for previous section if exists
+              // Transition complete - go to previous section if exists
               if (prev.sectionIndex > 0) {
+                const prevSection = SECTIONS[prev.sectionIndex - 1];
+                const isPrevHero = prev.sectionIndex - 1 === 0;
+                
                 return {
                   sectionIndex: prev.sectionIndex - 1,
-                  imgIndex: 1,
-                  showCard: true,
-                  bgPosition: "left",
+                  imgIndex: isPrevHero ? prevSection.count : 1, // Hero starts at max, others at 1
+                  showCard: !isPrevHero, // No card for hero
+                  bgPosition: isPrevHero ? "center" : "left",
                   isPlaying: false,
                   direction: "up"
                 };
               }
-              return { ...prev, imgIndex: currentSection.count, bgPosition: "left", isPlaying: false };
+              // Already at first section, just reset
+              return { ...prev, imgIndex: currentSection.count, bgPosition: "center", isPlaying: false };
             }
             return { ...prev, imgIndex: prev.imgIndex + 1, bgPosition: "center", showCard: false };
           }
@@ -156,6 +199,126 @@ export default function Home() {
     }
     return () => { if (intervalId) clearInterval(intervalId); };
   }, [activeData.isPlaying, activeData.sectionIndex, activeData.direction]);
+
+  // --- BUTTON HANDLERS ---
+  const handleNext = () => {
+    if (activeData.isPlaying) return; // Prevent during animation
+    
+    const isHeroSection = activeData.sectionIndex === 0;
+    
+    if (isHeroSection) {
+      // HERO SECTION: Click-only navigation, no auto-animation
+      if (activeData.imgIndex > 1) {
+        // Still have images to show - just decrement
+        setActiveData(prev => ({
+          ...prev,
+          imgIndex: prev.imgIndex - 1
+        }));
+      } else {
+        // Reached last image (image 1) - transition to vault section
+        const nextSection = SECTIONS[1];
+        setActiveData({
+          sectionIndex: 1,
+          imgIndex: nextSection.count,
+          showCard: false,
+          bgPosition: "center",
+          isPlaying: true, // Auto-start animation for vault section
+          direction: "down"
+        });
+      }
+    } else if (!activeData.showCard) {
+      // OTHER SECTIONS: Not showing card yet - start animation to show card
+      setActiveData(prev => ({
+        ...prev,
+        isPlaying: true,
+        direction: "down"
+      }));
+    } else {
+      // Card is showing - move to next section
+      if (activeData.sectionIndex < SECTIONS.length - 1) {
+        const nextSection = SECTIONS[activeData.sectionIndex + 1];
+        setActiveData({
+          sectionIndex: activeData.sectionIndex + 1,
+          imgIndex: nextSection.count, // Start at max image
+          showCard: false,
+          bgPosition: "center",
+          isPlaying: true, // Auto-start animation for new section
+          direction: "down"
+        });
+      }
+    }
+  };
+
+  const handlePrevious = () => {
+    if (activeData.isPlaying) return; // Prevent during animation
+    
+    const isHeroSection = activeData.sectionIndex === 0;
+    
+    if (isHeroSection) {
+      // HERO SECTION: Click-only navigation
+      if (activeData.imgIndex < SECTIONS[0].count) {
+        // Can go back to previous images
+        setActiveData(prev => ({
+          ...prev,
+          imgIndex: prev.imgIndex + 1
+        }));
+      }
+      // Already at first image (max index), do nothing
+    } else if (activeData.showCard) {
+      // Card is showing - start reverse animation
+      setActiveData(prev => ({
+        ...prev,
+        showCard: false,
+        isPlaying: true,
+        direction: "up"
+      }));
+    } else if (activeData.sectionIndex > 0) {
+      // Not showing card - go to previous section
+      const prevSectionIndex = activeData.sectionIndex - 1;
+      const prevSection = SECTIONS[prevSectionIndex];
+      const isPrevHero = prevSectionIndex === 0;
+      
+      setActiveData({
+        sectionIndex: prevSectionIndex,
+        imgIndex: isPrevHero ? prevSection.count : 1,
+        showCard: !isPrevHero, // No card for hero
+        bgPosition: isPrevHero ? "center" : "left",
+        isPlaying: false,
+        direction: "up"
+      });
+    }
+  };
+
+  // --- COMPUTED BUTTON TEXT ---
+  const getNextButtonText = () => {
+    if (activeData.isPlaying) return "Loading...";
+    
+    // Other sections with card - move to next
+    if (activeData.showCard) {
+      if (activeData.sectionIndex >= SECTIONS.length - 1) {
+        return "You've explored everything!";
+      }
+      return `Explore ${SECTIONS[activeData.sectionIndex + 1].title}`;
+    }
+    
+    // Not showing card - standard next
+    return "Next";
+  };
+
+  const getPreviousButtonText = () => {
+    if (activeData.isPlaying) return "Loading...";
+    
+    if (activeData.showCard && activeData.sectionIndex > 0) {
+      return `Back to ${SECTIONS[activeData.sectionIndex - 1].title}`;
+    }
+    
+    return "Previous";
+  };
+
+  // Check if buttons should be disabled
+  const isHeroNow = activeData.sectionIndex === 0;
+  const isNextDisabled = activeData.isPlaying || (!isHeroNow && activeData.showCard && activeData.sectionIndex >= SECTIONS.length - 1);
+  const isPreviousDisabled = activeData.isPlaying || (isHeroNow && activeData.imgIndex >= SECTIONS[0].count);
 
   useEffect(() => {
     // --- PRELOAD IMAGES ---
@@ -175,41 +338,22 @@ export default function Home() {
         imgIndex: section.count,
         showCard: false,
         bgPosition: "center",
-        isPlaying: false,
+        isPlaying: true, // Auto-play animation when jumping to section
         direction: "down"
       });
     };
     
     window.addEventListener('forceSectionChange', handleForceSectionChange);
 
+    // --- SCROLL DIRECTION TRACKING (for visual arrows only) ---
     let prevScrollY = window.scrollY;
     let timeoutId = null;
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const scrollingDown = scrollY > prevScrollY;
       const scrollingUp = scrollY < prevScrollY;
-      
-      // Force reset at the very top (fix for "photo6.png should be displayed")
-      if (scrollY < 50) {
-        const isAtVeryTop = scrollY <= 10;
-        setActiveData(prev => {
-           const desiredPos = isAtVeryTop ? "left" : "center";
-           
-           if (prev.imgIndex !== SECTIONS[0].count || prev.showCard || prev.bgPosition !== desiredPos) {
-               return {
-                   sectionIndex: 0,
-                   imgIndex: SECTIONS[0].count, 
-                   showCard: false,
-                   bgPosition: desiredPos,
-                   isPlaying: false,
-                   direction: "down"
-               };
-           }
-           return prev;
-        });
-      }
 
-      // Update scroll direction state
+      // Update scroll direction state for visual arrows
       if (Math.abs(scrollY - prevScrollY) > 5) {
         if (scrollingDown) {
           setScrollDir("down");
@@ -231,52 +375,6 @@ export default function Home() {
       timeoutId = setTimeout(() => {
         setIsScrolling(false);
       }, 800);
-
-      let accumulatedHeight = 0;
-      for (let i = 0; i < SECTIONS.length; i++) {
-        const section = SECTIONS[i];
-        
-        const imagePhaseHeight = section.count * SCROLL_PER_IMG;
-        const totalSectionHeight = imagePhaseHeight + CARD_BUFFER;
-        
-        const sectionStart = accumulatedHeight;
-        const sectionEnd = sectionStart + totalSectionHeight;
-       
-        if (scrollY >= sectionStart && scrollY < sectionEnd) {
-          setActiveData(prev => {
-             // 1. Enter new section -> Reset with proper direction
-             if (prev.sectionIndex !== i) {
-                 // Determine direction based on section change
-                 const newDirection = i > prev.sectionIndex ? "down" : "up";
-                 
-                 // When entering a new section, properly reset state
-                 return {
-                     sectionIndex: i,
-                     imgIndex: newDirection === "down" ? section.count : 1, 
-                     showCard: newDirection === "up", // Show card if scrolling up into section
-                     bgPosition: newDirection === "up" ? "left" : "center",
-                     isPlaying: false,
-                     direction: newDirection
-                 };
-             }
-             
-             // 2. Scrolling DOWN: Trigger forward animation
-             if (scrollingDown && scrollY >= 50 && !prev.isPlaying && !prev.showCard && prev.imgIndex > 1) {
-                 return { ...prev, isPlaying: true, direction: "down" };
-             }
-             
-             // 3. Scrolling UP: Trigger reverse animation to exit section
-             if (scrollingUp && prev.showCard && !prev.isPlaying) {
-                 return { ...prev, isPlaying: true, direction: "up", showCard: false };
-             }
-             
-             return prev;
-          });
-          return;
-        }
-
-        accumulatedHeight += totalSectionHeight;
-      }
     };
     
     setTimeout(() => { setIsSkeletonVisible(false); }, 3000);
@@ -365,13 +463,10 @@ export default function Home() {
           className="fixed inset-0 md:top-0 md:left-0 md:right-auto md:bottom-auto w-full h-screen md:h-auto flex flex-col md:flex-row justify-center md:justify-between items-center md:items-start px-4 z-30 pt-0 md:pt-4 pointer-events-none"
         >
         <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left">
-            <div className="text-white text-3xl md:text-6xl font-bold drop-shadow-lg">India Facts Portal</div>
+            <div className="text-white text-3xl md:text-6xl font-bold drop-shadow-lg">Facts Portal</div>
             <div className="flex text-lg md:text-2xl text-amber-50 mt-1.5 drop-shadow-md">
-              Visit every day<br /> to be aware of what is going on.
+              Visit every day<br /> to discover something new.
             </div>
-          </div>
-          <div className="hidden md:flex align-baseline h-screen pb-10 items-center justify-center">
-            <img src="/images/india.jpg" className="h-[80%] flex justify-center object-cover rounded-md" />
           </div>
         </motion.div>
 
@@ -433,25 +528,72 @@ export default function Home() {
                 )}
               </AnimatePresence>
 
+              {/* Gradient Overlay for Header Text Overlap */}
+              {/* Top gradient */}
+              <motion.div 
+                style={{ opacity: headerOpacity }}
+                className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10 pointer-events-none"
+              />
+              {/* Left gradient for desktop header text */}
+              <motion.div 
+                style={{ opacity: headerOpacity }}
+                className="hidden md:block absolute top-0 left-0 bottom-0 w-1/3 bg-gradient-to-r from-black/60 via-black/30 to-transparent z-10 pointer-events-none"
+              />
+
+
           </motion.div>
-              {activeData.showCard && (
-                <motion.div
-                  initial={{ opacity: 0, x: isMobile ? 0 : 100, y: isMobile ? 100 : 0 }}
-                  animate={{ opacity: 1, x: isMobile ? 0 : 500, y: isMobile ? 0 : 0 }} 
-                  transition={{ delay: 0.5, duration: 1 }} 
-                  className={`absolute z-100 shadow-2xl shadow-black/40 rounded-lg ${
-                    isMobile 
-                      ? "w-[90%] bottom-[10%]" 
-                      : "w-80"
-                  }`}
-                >
-                  <Card title={currentSection.title}
-                        description={currentSection.description}
-                        link={currentSection.link}
-      
-                  />
-                </motion.div>
-              )}
+          
+          {/* Card Display */}
+          {activeData.showCard && (
+            <motion.div
+              initial={{ opacity: 0, x: isMobile ? 0 : 100, y: isMobile ? 100 : 0 }}
+              animate={{ opacity: 1, x: isMobile ? 0 : 500, y: isMobile ? 0 : 0 }} 
+              transition={{ delay: 0.5, duration: 1 }} 
+              className={`absolute z-100 shadow-2xl shadow-black/40 rounded-lg ${
+                isMobile 
+                  ? "w-[90%] bottom-[10%]" 
+                  : "w-80"
+              }`}
+            >
+              <Card title={currentSection.title}
+                    description={currentSection.description}
+                    link={currentSection.link}
+              />
+            </motion.div>
+          )}
+
+          {/* Previous Button - positioned at TOP */}
+          {activeData.sectionIndex > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="absolute top-8 left-1/2 transform -translate-x-1/2 z-50"
+            >
+              <NavigationButton
+                text={getPreviousButtonText()}
+                onClick={handlePrevious}
+                direction="up"
+                disabled={isPreviousDisabled}
+              />
+            </motion.div>
+          )}
+
+          {/* Next Button - positioned at BOTTOM */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50"
+          >
+            <NavigationButton
+              text={getNextButtonText()}
+              onClick={handleNext}
+              direction="down"
+              disabled={isNextDisabled}
+              variant={activeData.sectionIndex === 0 && activeData.showCard ? "transition" : "primary"}
+            />
+          </motion.div>
         </div>
 
         <div style={{ height: `${totalPageHeight + 100}px` }}></div>
@@ -463,10 +605,10 @@ export default function Home() {
             {/* Share Section */}
             <div className="text-center mb-10">
               <h3 className="text-xl md:text-2xl font-semibold text-white mb-4">
-                Share India Facts Portal
+                Share Facts Portal
               </h3>
               <p className="text-zinc-400 mb-6 text-sm md:text-base">
-                Help others discover fascinating facts about India!
+                Help others discover fascinating facts!
               </p>
               
               {/* Social Share Buttons */}
@@ -475,7 +617,7 @@ export default function Home() {
                 <motion.a
                   whileHover={{ scale: 1.1, y: -3 }}
                   whileTap={{ scale: 0.95 }}
-                  href={`https://twitter.com/intent/tweet?text=Check out India Facts Portal - Your daily dose of amazing facts about India!&url=${typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : ''}`}
+                  href={`https://twitter.com/intent/tweet?text=Check out Facts Portal - Your daily dose of amazing facts!&url=${typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : ''}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-5 py-3 rounded-xl 
@@ -492,7 +634,7 @@ export default function Home() {
                 <motion.a
                   whileHover={{ scale: 1.1, y: -3 }}
                   whileTap={{ scale: 0.95 }}
-                  href={`https://wa.me/?text=Check out India Facts Portal - Your daily dose of amazing facts about India! ${typeof window !== 'undefined' ? window.location.href : ''}`}
+                  href={`https://wa.me/?text=Check out Facts Portal - Your daily dose of amazing facts! ${typeof window !== 'undefined' ? window.location.href : ''}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-5 py-3 rounded-xl 
@@ -600,7 +742,7 @@ export default function Home() {
                 Made with <span className="text-red-500">❤️</span> for India
               </p>
               <p className="text-zinc-600 text-xs mt-1">
-                © {new Date().getFullYear()} India Facts Portal. All rights reserved.
+                © {new Date().getFullYear()} Facts Portal. All rights reserved.
               </p>
             </div>
           </div>
